@@ -1,0 +1,161 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <title>ELMAH&mdash;Home</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="generator" content="Jekyll v2.5.3">
+  <link rel="alternate" type="application/atom+xml" title="Recent commits to Jekyll master branch" href="https://github.com/elmah/www/commits/master.atom">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic,900">
+  <link rel="stylesheet" href="/css/screen.css">
+  <!--[if lt IE 9]>
+  <script src="/js/html5shiv.min.js"></script>
+  <script src="/js/respond.min.js"></script>
+  <![endif]-->
+</head>
+
+
+<body class="wrap">
+  <header role="banner">
+  <nav class="mobile-nav show-on-mobiles">
+    <ul>
+  <li class="current">
+    <a href="/">Home</a>
+  </li>
+  <li>
+    <a href="https://code.google.com/p/elmah/source/checkout">Sources</a>
+  </li>
+  <li>
+    <a href="https://github.com/elmah/www"><span class="hide-on-mobiles">View on </span>GitHub</a>
+  </li>
+</ul>
+
+  </nav>
+  <div class="grid">
+    <div class="unit one-third center-on-mobiles">
+      <h1>
+        <i class="fa fa-bolt"></i>
+        <a href="/">
+          <span title="Error Logging Modules and Handlers">ELMAH</span>
+        </a>
+      </h1>
+    </div>
+    <nav class="main-nav unit two-thirds hide-on-mobiles">
+      <ul>
+  <li class="current">
+    <a href="/">Home</a>
+  </li>
+  <li>
+    <a href="https://code.google.com/p/elmah/source/checkout">Sources</a>
+  </li>
+  <li>
+    <a href="https://github.com/elmah/www"><span class="hide-on-mobiles">View on </span>GitHub</a>
+  </li>
+</ul>
+
+    </nav>
+  </div>
+</header>
+
+
+  <section class="standalone">
+  <div class="grid">
+
+    <div class="unit whole">
+      <article>
+        <h1>Home</h1>
+        <p>ELMAH (Error Logging Modules and Handlers) is an application-wide error logging facility that is completely pluggable. It can be dynamically added to a running <a href="http://www.asp.net/">ASP.NET</a> web application, or even all ASP.NET web applications on a machine, without any need for re-compilation or re-deployment.</p>
+
+<p>Once ELMAH has been dropped into a running web application and configured appropriately, you get the following facilities without changing a single line of your code:</p>
+
+<ul>
+  <li>Logging of nearly all unhandled exceptions.</li>
+  <li>A web page to remotely view the entire log of recoded exceptions.</li>
+  <li>A web page to remotely view the full details of any one logged exception, including colored stack traces.</li>
+  <li>In many cases, you can review the original <a href="http://en.wikipedia.org/wiki/Yellow_Screen_of_Death#ASP.NET">yellow screen of death</a> that ASP.NET generated for a given exception, even with <code>customErrors</code> mode turned off.</li>
+  <li>An e-mail notification of each error at the time it occurs.</li>
+  <li>An RSS feed of the last 15 errors from the log.</li>
+</ul>
+
+<div class="note">
+  <h5>ELMAH 1.2 Service Pack (SP) 2 <a href="https://code.google.com/p/elmah/wiki/Downloads?tm=2">now available</a></h5>
+  <p>See also:</p>
+  
+  <ul>
+    <li><a href="http://code.google.com/p/elmah/issues/list?q=label%3AMilestone-Release1.2&amp;can=1">What’s new and fixed in 1.2</a></li>
+    <li><a href="http://code.google.com/p/elmah/issues/list?q=label%3AMilestone-Release1.2SP1&amp;can=1">What’s fixed in 1.2 SP1</a></li>
+    <li><a href="http://code.google.com/p/elmah/issues/list?q=label%3AMilestone-Release1.2SP2&amp;can=1">What’s fixed in 1.2 SP2</a></li>
+  </ul>
+</div>
+
+<h2 id="more-features">More Features</h2>
+
+<ul>
+  <li>Log errors to several back-end storages:
+    <ul>
+      <li><a href="http://www.microsoft.com/sql/">Microsoft SQL Server</a></li>
+      <li><a href="http://www.oracle.com/">Oracle</a> (<a href="http://elmah.googlecode.com/svn/tags/REL-1.2/src/Elmah/OracleErrorLog.cs">OracleErrorLog</a>)</li>
+      <li><a href="http://www.sqlite.org/">SQLite</a> (version 3) database file</li>
+      <li>[Access Microsoft Access] (<a href="http://elmah.googlecode.com/svn/tags/REL-1.2/src/Elmah/AccessErrorLog.cs">AccessErrorLog</a>)</li>
+      <li><del><a href="http://www.vistadb.net/">VistaDB</a> (<a href="http://elmah.googlecode.com/svn/tags/REL-1.1/src/Elmah/VistaDBErrorLog.cs">VistaDBErrorLog</a>)</del>; deprecated in release 1.2</li>
+      <li>Loose XML files</li>
+      <li>RAM (in-memory)</li>
+      <li><a href="http://www.microsoft.com/sql/">SQL Server Compact Edition</a></li>
+      <li><a href="http://www.mysql.com/">MySQL</a></li>
+      <li><a href="http://www.postgresql.org/">PostgreSQL</a></li>
+    </ul>
+  </li>
+  <li>Supports ASP.NET 1.x, 2.0 and later versions.</li>
+  <li>Supports medium trust under ASP.NET 2.0 and later versions.</li>
+  <li><a href="http://code.google.com/p/elmah/wiki/ErrorFiltering">Filter unwanted exceptions</a>, programmatically and via configuration.</li>
+  <li>Get a digest RSS feed that lists errors by day and up to last 15 days.</li>
+  <li>Programmatically and explicitly signal exceptions that, although handled in some way, should still be logged.</li>
+  <li>Download the whole error log into a single CSV file for analysis, filtering and charting using <a href="http://www.microsoft.com/excel/">Microsoft Excel</a> or <a href="http://www.microsoft.com/technet/scriptcenter/tools/logparser/default.mspx">Microsoft Log Parser</a>.</li>
+  <li>Send error notifications/tweets to your <a href="http://code.google.com/p/elmah/wiki/ProwlingErrors">iPhone, iPad or a custom application</a>.</li>
+  <li>Access the raw XML behind any logged error from its details page, making it easier to get to information (like form data, including <a href="http://msdn2.microsoft.com/en-us/library/ms972976.aspx">View State</a>) that, until now, had to be grabbed directly out of the error log’s backing store.</li>
+  <li>Supports ASP.NET web application root operator (<code>~</code>) in paths for file-based error log implementations.</li>
+  <li>Check if any ELMAH installation is up to date through its <em>about page</em>.</li>
+  <li>Run a self-contained demo Web site showing error logging and mailing in action right out of the box. Run <a href="http://elmah.googlecode.com/svn/tags/REL-1.2/demo.cmd">demo.cmd</a> in the root of the distribution.</li>
+  <li>Use <code>MsAjaxDeltaErrorLogModule</code> to log errors during partial updates enabled by <a href="http://msdn.microsoft.com/en-us/library/system.web.ui.updatepanel.aspx">UpdatePanel</a> in Microsoft ASP.NET AJAX</li>
+  <li>Use <a href="http://elmah.googlecode.com/svn/tags/REL-1.2/src/Elmah/ErrorLogDataSourceAdapter.cs">ErrorLogDataSourceAdapter</a> together with <a href="http://msdn.microsoft.com/en-us/library/system.web.ui.webcontrols.objectdatasource.aspx">ObjectDataSource</a> from ASP.NET to create your own custom views of the error log, almost purely in server-side markup and without a line of code!</li>
+  <li>Get error data in <a href="http://www.json.org/">JSON</a> (in addition to XML) from the detail page of an error.</li>
+  <li>Supports the <a href="http://blogs.msdn.com/smartclientdata/archive/2005/08/26/456886.aspx"><code>|DataDirectory|</code> macro</a> to avoid absolute paths in connection strings.</li>
+  <li>Use JavaScript to express complex conditions for <a href="http://code.google.com/p/elmah/wiki/ErrorFiltering">filtering exceptions</a> in a more concise and familiar manner. See <a href="http://elmah.googlecode.com/svn/tags/REL-1.2/samples/web.config">sample web.config</a> for examples.</li>
+  <li>Compiled for .NET 1.x and 2.0; run on .NET 1.x, 2.0. 3.x and 4.0.</li>
+  <li>Sources include solution files for Visual Studio 2002, 2003 and 2010.</li>
+  <li>And, of course, <a href="http://code.google.com/p/elmah/issues/list?can=1&amp;q=status%3AFixed">lots of fixes</a> from field testing. Yep, that’s a feature too! :)</li>
+</ul>
+
+<h2 id="elmah-in-action">ELMAH in Action</h2>
+
+<p>Following is a screenshot of Firefox displaying the error log page as provided by ELMAH:</p>
+
+<p><img src="img/homeshot.png" alt="Home Shot" /></p>
+
+<p>To learn more about ELMAH, see the MSDN article “<a href="http://msdn2.microsoft.com/en-us/library/aa479332.aspx">Using HTTP Modules and Handlers to Create Pluggable ASP.NET Components</a>” by <a href="http://www.4guysfromrolla.com/ScottMitchell.shtml">Scott Mitchell</a> and <a href="http://www.raboof.com/">Atif Aziz</a>.</p>
+
+      </article>
+    </div>
+
+    <div class="clear"></div>
+
+  </div>
+</section>
+
+
+  <footer role="contentinfo">
+  <div class="grid">
+    <div class="unit one-third center-on-mobiles">
+      <p>&copy;&nbsp;2004 <a href="http://www.raboof.com/">Atif Aziz</a> under the terms of the <a href="http://www.apache.org/licenses/LICENSE-2.0" title="Apache License, Version 2.0">ALv2</a>.
+         Portions &copy;&nbsp;2008 <a href="http://tom.preston-werner.com/">Tom Preston-Werner</a> under <a href="https://github.com/jekyll/jekyll/blob/master/LICENSE">MIT&nbsp;License</a>.</p>
+    </div>
+    <div class="unit two-thirds align-right center-on-mobiles">
+      <p>Published: 2015-06-10 01:09 CEST</p>
+    </div>
+  </div>
+</footer>
+
+  
+
+</body>
+</html>
