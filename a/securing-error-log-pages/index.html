@@ -1,0 +1,222 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <title>ELMAH&mdash;Securing Error Log Pages</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="generator" content="Jekyll v2.5.3">
+  <link rel="alternate" type="application/atom+xml" title="Recent commits to master branch" href="https://github.com/elmah/www/commits/master.atom">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic,900">
+  <link rel="stylesheet" href="/css/screen.css">
+  <!--[if lt IE 9]>
+  <script src="/js/html5shiv.min.js"></script>
+  <script src="/js/respond.min.js"></script>
+  <![endif]-->
+</head>
+
+
+<body class="wrap">
+  <header role="banner">
+  <nav class="mobile-nav show-on-mobiles">
+    <ul>
+  <li class="">
+    <a href="/">Home</a>
+  </li>
+  <li class="">
+    <a href="/downloads/"><i class="fa fa-download show-on-mobiles"></i><span class="hide-on-mobiles">Download</span></a>
+  </li>
+  <li>
+    <a href="https://code.google.com/p/elmah/source/checkout">Sources</a>
+  </li>
+  <li>
+    <a href="https://github.com/elmah/www"><span class="hide-on-mobiles">View on </span>GitHub</a>
+  </li>
+</ul>
+
+  </nav>
+  <div class="grid">
+    <div class="unit one-third center-on-mobiles">
+      <h1>
+        <i class="fa fa-bolt"></i>
+        <a href="/">
+          <span title="Error Logging Modules and Handlers">ELMAH</span>
+        </a>
+      </h1>
+    </div>
+    <nav class="main-nav unit two-thirds hide-on-mobiles">
+      <ul>
+  <li class="">
+    <a href="/">Home</a>
+  </li>
+  <li class="">
+    <a href="/downloads/"><i class="fa fa-download show-on-mobiles"></i><span class="hide-on-mobiles">Download</span></a>
+  </li>
+  <li>
+    <a href="https://code.google.com/p/elmah/source/checkout">Sources</a>
+  </li>
+  <li>
+    <a href="https://github.com/elmah/www"><span class="hide-on-mobiles">View on </span>GitHub</a>
+  </li>
+</ul>
+
+    </nav>
+  </div>
+</header>
+
+
+  <section class="standalone">
+  <div class="grid">
+
+    <div class="unit whole">
+      <article>
+        <h1>Securing Error Log Pages</h1>
+        <p>You can secure ELMAH’s display or feeds in two ways:</p>
+
+<ul>
+  <li>Enabling or disabling remote access</li>
+  <li>Granting or denying access via ASP.NET authorization</li>
+</ul>
+
+<p>Both of these are discussed in the sub-sections that follow.</p>
+
+<div class="note warning">
+  <h5>Why is this so important?</h5>
+  <p>
+    See <a href="http://www.troyhunt.com/2012/01/aspnet-session-hijacking-with-google.html">ASP.NET session hijacking with Google and ELMAH</a>.
+  </p>
+</div>
+
+<h2 id="enabling-or-disabling-remote-access">Enabling or Disabling Remote Access</h2>
+
+<p>ELMAH provides a configuration section and a setting to enable or disable remote access to the error log display and feeds. When disabled (the default), only local access to the error log display and feeds is allowed. The snippet below shows how to enable remote access:</p>
+
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;elmah&gt;</span>  
+    <span class="nt">&lt;security</span> <span class="na">allowRemoteAccess=</span><span class="s">&quot;1&quot;</span> <span class="nt">/&gt;</span>  
+<span class="nt">&lt;/elmah&gt;</span></code></pre></div>
+
+<p>Remote access is enabled when the value of the <code>allowRemoteAccess</code> attribute is either <code>1</code>, <code>yes</code>, <code>true</code> or <code>on</code>. Otherwise it is disabled. Local access is always available.</p>
+
+<div class="note info">
+  <h5>Have expected configuration sections declared</h5>
+  <p>
+    Make sure you have declared the expected configuration sections in order to apply the above configuration.
+    See <a href="http://code.google.com/p/elmah/wiki/DotNetSlackersArticle#Declaring_configuration_sections">Declaring configuration sections</a> for more.
+  </p>
+</div>
+
+<h2 id="granting-or-denying-access-via-aspnet-authorization">Granting or Denying Access via ASP.NET Authorization</h2>
+
+<p>If you must enable remote access, it is paramount that you also secure access to only authorized users. You can do this using ASP.NET’s built-in authorization mechanism.</p>
+
+<p>Different locations in a web site can be secured with different authorization rules. Suppose your web application is deployed at <code>http://www.example.com/</code> and ELMAH is configured to respond to <code>elmah.axd</code>. You can secure <code>http://www.example.com/elmah.axd</code> from unauthorized users by adding a <code>location</code> element to your configuration as follows:</p>
+
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;location</span> <span class="na">path=</span><span class="s">&quot;elmah.axd&quot;</span><span class="nt">&gt;</span>  
+    <span class="nt">&lt;system.web&gt;</span>
+        <span class="nt">&lt;httpHandlers&gt;</span>
+            <span class="nt">&lt;add</span> <span class="na">verb=</span><span class="s">&quot;POST,GET,HEAD&quot;</span> 
+                 <span class="na">path=</span><span class="s">&quot;elmah.axd&quot;</span> 
+                 <span class="na">type=</span><span class="s">&quot;Elmah.ErrorLogPageFactory, Elmah&quot;</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;/httpHandlers&gt;</span>
+        <span class="nt">&lt;authorization&gt;</span>
+            <span class="nt">&lt;deny</span> <span class="na">users=</span><span class="s">&quot;*&quot;</span> <span class="nt">/&gt;</span>  
+        <span class="nt">&lt;/authorization&gt;</span>  
+    <span class="nt">&lt;/system.web&gt;</span>
+    <span class="nt">&lt;system.webServer&gt;</span>
+        <span class="nt">&lt;handlers&gt;</span>
+            <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ELMAH&quot;</span> 
+                 <span class="na">verb=</span><span class="s">&quot;POST,GET,HEAD&quot;</span>
+                 <span class="na">path=</span><span class="s">&quot;elmah.axd&quot;</span> 
+                 <span class="na">type=</span><span class="s">&quot;Elmah.ErrorLogPageFactory, Elmah&quot;</span>
+                 <span class="na">preCondition=</span><span class="s">&quot;integratedMode&quot;</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;/handlers&gt;</span>
+    <span class="nt">&lt;/system.webServer&gt;</span>
+<span class="nt">&lt;/location&gt;</span></code></pre></div>
+
+<p>There are three important things to note here:</p>
+
+<ol>
+  <li>The handler registrations need to be moved under the <code>location</code> tag. Having them outside does not secure access sufficiently.</li>
+  <li>The <code>location</code> element’s <code>path</code> attribute carries the same value as the <code>path</code> attribute of the handler registrations. Unfortunately, it has to be repeated so if you change one, the others must be updated to match.</li>
+  <li>The <code>authorization</code> element is where the authorization rules go and where you will want to selectively grant access.</li>
+</ol>
+
+<p>The configuration example above denies access to all users, but that is a good starting point. You will probably want to add rules that allow access to only specific users and/or roles. For example, you might have a role for administrators and developers called <em>admin</em> and <em>dev</em>, respectively. To allow users that are members of either role, you could configure the <code>authorization</code> section above as follows:</p>
+
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;authorization&gt;</span>  
+    <span class="nt">&lt;allow</span> <span class="na">roles=</span><span class="s">&quot;admin&quot;</span> <span class="nt">/&gt;</span>  
+    <span class="nt">&lt;allow</span> <span class="na">roles=</span><span class="s">&quot;dev&quot;</span> <span class="nt">/&gt;</span>  
+    <span class="nt">&lt;deny</span> <span class="na">users=</span><span class="s">&quot;*&quot;</span> <span class="nt">/&gt;</span>  
+<span class="nt">&lt;/authorization&gt;</span></code></pre></div>
+
+<h3 id="further-information">Further Information</h3>
+
+<p>For more information, see also:</p>
+
+<ul>
+  <li><a href="http://support.microsoft.com/kb/316871">Q316871: How To Control Authorization Permissions in an ASP.NET Application</a></li>
+  <li><a href="http://support.microsoft.com/kb/815174">Q815174: How To Make Application and Directory-Specific Configuration Settings in an ASP.NET Application</a></li>
+  <li><a href="http://support.microsoft.com/kb/301240">Q301240: How To Implement Forms-Based Authentication in Your ASP.NET Application by Using C#.NET</a></li>
+  <li><a href="http://haacked.com/archive/2007/07/24/securely-implement-elmah-for-plug-and-play-error-logging.aspx">Securely Implement ELMAH For Plug And Play Error Logging</a> and the accompanying <a href="http://code.haacked.com/aspnet/securing-elmah-demo.zip">demo sample</a></li>
+</ul>
+
+      </article>
+    </div>
+
+    <div class="clear"></div>
+
+  </div>
+</section>
+
+
+  <footer role="contentinfo">
+  <div class="grid">
+    <div class="unit one-third center-on-mobiles">
+      <p>&copy;&nbsp;2004 <a href="http://www.raboof.com/">Atif Aziz</a> under the terms of the <a href="http://www.apache.org/licenses/LICENSE-2.0" title="Apache License, Version 2.0">ALv2</a>.
+         Portions &copy;&nbsp;2008 <a href="http://tom.preston-werner.com/">Tom Preston-Werner</a> under <a href="https://github.com/jekyll/jekyll/blob/master/LICENSE">MIT&nbsp;License</a>.</p>
+    </div>
+    <div class="unit two-thirds align-right center-on-mobiles">
+      <p>Published: 2015-06-18 19:49 CEST</p>
+    </div>
+  </div>
+</footer>
+
+  <script>
+  var anchorForId = function (id) {
+    var anchor = document.createElement("a");
+    anchor.className = "header-link";
+    anchor.href      = "#" + id;
+    anchor.innerHTML = "<span class=\"sr-only\">Permalink</span><i class=\"fa fa-link\"></i>";
+    anchor.title = "Permalink";
+    return anchor;
+  };
+
+  var linkifyAnchors = function (level, containingElement) {
+    var headers = containingElement.getElementsByTagName("h" + level);
+    for (var h = 0; h < headers.length; h++) {
+      var header = headers[h];
+
+      if (typeof header.id !== "undefined" && header.id !== "") {
+        header.appendChild(anchorForId(header.id));
+      }
+    }
+  };
+
+  document.onreadystatechange = function () {
+    if (this.readyState === "complete") {
+      var contentBlock = document.getElementsByClassName("docs")[0]
+                      || document.getElementsByClassName("news")[0]
+                      || document.getElementsByClassName("standalone")[0];
+      if (!contentBlock) {
+        return;
+      }
+      for (var level = 1; level <= 6; level++) {
+        linkifyAnchors(level, contentBlock);
+      }
+    }
+  };
+</script>
+
+  
+
+</body>
+</html>

@@ -1,0 +1,411 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <title>ELMAH&mdash;Error Filtering</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="generator" content="Jekyll v2.5.3">
+  <link rel="alternate" type="application/atom+xml" title="Recent commits to master branch" href="https://github.com/elmah/www/commits/master.atom">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic,900">
+  <link rel="stylesheet" href="/css/screen.css">
+  <!--[if lt IE 9]>
+  <script src="/js/html5shiv.min.js"></script>
+  <script src="/js/respond.min.js"></script>
+  <![endif]-->
+</head>
+
+
+<body class="wrap">
+  <header role="banner">
+  <nav class="mobile-nav show-on-mobiles">
+    <ul>
+  <li class="">
+    <a href="/">Home</a>
+  </li>
+  <li class="">
+    <a href="/downloads/"><i class="fa fa-download show-on-mobiles"></i><span class="hide-on-mobiles">Download</span></a>
+  </li>
+  <li>
+    <a href="https://code.google.com/p/elmah/source/checkout">Sources</a>
+  </li>
+  <li>
+    <a href="https://github.com/elmah/www"><span class="hide-on-mobiles">View on </span>GitHub</a>
+  </li>
+</ul>
+
+  </nav>
+  <div class="grid">
+    <div class="unit one-third center-on-mobiles">
+      <h1>
+        <i class="fa fa-bolt"></i>
+        <a href="/">
+          <span title="Error Logging Modules and Handlers">ELMAH</span>
+        </a>
+      </h1>
+    </div>
+    <nav class="main-nav unit two-thirds hide-on-mobiles">
+      <ul>
+  <li class="">
+    <a href="/">Home</a>
+  </li>
+  <li class="">
+    <a href="/downloads/"><i class="fa fa-download show-on-mobiles"></i><span class="hide-on-mobiles">Download</span></a>
+  </li>
+  <li>
+    <a href="https://code.google.com/p/elmah/source/checkout">Sources</a>
+  </li>
+  <li>
+    <a href="https://github.com/elmah/www"><span class="hide-on-mobiles">View on </span>GitHub</a>
+  </li>
+</ul>
+
+    </nav>
+  </div>
+</header>
+
+
+  <section class="standalone">
+  <div class="grid">
+
+    <div class="unit whole">
+      <article>
+        <h1>Error Filtering</h1>
+        <ul id="markdown-toc">
+  <li><a href="#introduction" id="markdown-toc-introduction">Introduction</a></li>
+  <li><a href="#filtering-programmatically" id="markdown-toc-filtering-programmatically">Filtering Programmatically</a></li>
+  <li><a href="#filtering-declaratively-via-configuration" id="markdown-toc-filtering-declaratively-via-configuration">Filtering Declaratively via Configuration</a>    <ul>
+      <li><a href="#using-jscript" id="markdown-toc-using-jscript">Using JScript</a></li>
+      <li><a href="#filtering-by-source" id="markdown-toc-filtering-by-source">Filtering By Source</a></li>
+      <li><a href="#writing-your-own-assertion" id="markdown-toc-writing-your-own-assertion">Writing Your Own Assertion</a></li>
+      <li><a href="#assertions-reference" id="markdown-toc-assertions-reference">Assertions Reference</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="introduction">Introduction</h2>
+
+<p>When an unhandled exception is reported to ELMAH by ASP.NET, an application can decide whether to dismiss the exception or not. There are two ways for an application to do this, either programmatically or declaratively via the configuration file. The simpler of the two is programmatically because you do not need to learn anything new except write an event handler in your favorite language. The downside of the programmatic approach is that you need to write code and modify your web application (requiring possibly a static re-compile). With the configuration-based approach, you can simply apply filtering of exceptions to a running application.</p>
+
+<h2 id="filtering-programmatically">Filtering Programmatically</h2>
+
+<p>Let’s assume the following:</p>
+
+<ul>
+  <li>You have the <code>ErrorLogModule</code> installed and configured to log errors.</li>
+  <li>The <code>ErrorLogModule</code> is named <code>ErrorLog</code> via the <code>name</code> attribute of the entry under the <code>&lt;httpModules&gt;</code> section.</li>
+  <li>You wish to filter exceptions of type <code>System.Web.HttpRequestValidationException</code>.</li>
+</ul>
+
+<p>To add an exception filter programmatically, put the following in your <code>Global.asax</code> file (or in the code-behind file):</p>
+
+<div class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="c1">// Don&#39;t forget to reference the Elmah assembly and import its namespace.</span>
+
+<span class="k">void</span> <span class="nf">ErrorLog_Filtering</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">ExceptionFilterEventArgs</span> <span class="n">e</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">Exception</span><span class="p">.</span><span class="n">GetBaseException</span><span class="p">()</span> <span class="k">is</span> <span class="n">HttpRequestValidationException</span><span class="p">)</span>
+        <span class="n">e</span><span class="p">.</span><span class="n">Dismiss</span><span class="p">();</span>
+<span class="p">}</span></code></pre></div>
+
+<p>It’s really simple as that. When the error logging module receives an exception, it raises the <code>Filtering</code> even to see if any listeners wish to dismiss the exception. If an event handler calls the <code>Dismiss</code> method of the <code>ExceptionFilterEventArgs</code> object then the exception is not logged. Note that dismissing an exception does not clear the error so it still continues to surface as an unhandled exception. Dismissing here means that the module will not log it.</p>
+
+<p>If you also have the <code>ErrorMailModule</code> enabled, the filtering procedure is similar. You setup another event handler based on the name of the module and the event:</p>
+
+<div class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="k">void</span> <span class="nf">ErrorMail_Filtering</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">ExceptionFilterEventArgs</span> <span class="n">e</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">Exception</span><span class="p">.</span><span class="n">GetBaseException</span><span class="p">()</span> <span class="k">is</span> <span class="n">HttpRequestValidationException</span><span class="p">)</span>
+        <span class="n">e</span><span class="p">.</span><span class="n">Dismiss</span><span class="p">();</span>
+<span class="p">}</span></code></pre></div>
+
+<p>Naturally, you can combine the two by delegating to a common method so that you have the set of conditions for filtering in one place:</p>
+
+<div class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="k">void</span> <span class="nf">ErrorLog_Filtering</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">ExceptionFilterEventArgs</span> <span class="n">args</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">Filter</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">void</span> <span class="nf">ErrorMail_Filtering</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">ExceptionFilterEventArgs</span> <span class="n">args</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">Filter</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">void</span> <span class="nf">Filter</span><span class="p">(</span><span class="n">ExceptionFilterEventArgs</span> <span class="n">args</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">args</span><span class="p">.</span><span class="n">Exception</span><span class="p">.</span><span class="n">GetBaseException</span><span class="p">()</span> <span class="k">is</span> <span class="n">HttpRequestValidationException</span><span class="p">)</span>
+        <span class="n">args</span><span class="p">.</span><span class="n">Dismiss</span><span class="p">();</span>
+<span class="p">}</span></code></pre></div>
+
+<h2 id="filtering-declaratively-via-configuration">Filtering Declaratively via Configuration</h2>
+
+<p>Filtering via configuration is a bit more involved than the programmatic approach but the benefit is that you can apply it to any running web application without the need to modify or re-compile the application.</p>
+
+<p>The first step is to configure an additional module called <code>Elmah.ErrorFilterModule</code>. <strong>Make sure you add it after any of the logging modules from ELMAH</strong>, as shown here with <code>ErrorLogModule</code>:</p>
+
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;httpModules&gt;</span>
+    ...
+    <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ErrorLog&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorLogModule, Elmah&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ErrorFilter&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorFilterModule, Elmah&quot;</span><span class="nt">/&gt;</span>
+    ...
+<span class="nt">&lt;/httpModules&gt;</span></code></pre></div>
+
+<p><code>ErrorFilterModule</code> takes care of subscribing to the <code>Filtering</code> event of the modules that precede it. When the logging and mailing modules fire their <code>Filtering</code> event, <code>ErrorFilterModule</code> runs through one or more assertions to decide whether to dismiss the exception or not. If the assertions test true, the exception is dismissed. The assertions are indicated in a separate configuration section. The configuration section is handled by <code>Elmah.ErrorFilterSectionHandler</code> and must be registered as shown here:</p>
+
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;configSections&gt;</span>
+    ...
+    <span class="nt">&lt;sectionGroup</span> <span class="na">name=</span><span class="s">&quot;elmah&quot;</span><span class="nt">&gt;</span>
+        ...
+        <span class="nt">&lt;section</span> <span class="na">name=</span><span class="s">&quot;errorFilter&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorFilterSectionHandler, Elmah&quot;</span><span class="nt">/&gt;</span>
+        ...
+    <span class="nt">&lt;/sectionGroup&gt;</span>
+    ...
+<span class="nt">&lt;/configSections&gt;</span></code></pre></div>
+
+<p>ASP.NET applications running under medium trust should use the following version for the <code>section</code> entry that specifies the additional <code>requirePermission</code> attribute and sets its value to <code>false</code>:</p>
+
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;section</span> <span class="na">name=</span><span class="s">&quot;errorFilter&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorFilterSectionHandler, Elmah&quot;</span> <span class="na">requirePermission=</span><span class="s">&quot;false&quot;</span> <span class="nt">/&gt;</span></code></pre></div>
+
+<p>Now you can add the actual section under the <code>&lt;elmah&gt;</code> group:</p>
+
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;elmah&gt;</span>
+    ...
+    <span class="nt">&lt;errorFilter&gt;</span>
+        <span class="nt">&lt;test&gt;</span>
+            <span class="nt">&lt;equal</span> <span class="na">binding=</span><span class="s">&quot;HttpStatusCode&quot;</span> <span class="na">value=</span><span class="s">&quot;404&quot;</span> <span class="na">type=</span><span class="s">&quot;Int32&quot;</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;/test&gt;</span>
+    <span class="nt">&lt;/errorFilter&gt;</span>
+<span class="nt">&lt;/elmah&gt;</span></code></pre></div>
+
+<p>In the above example, there is a single <em>assertion</em> that will be true when the <code>HttpStatusCode</code> <em>equals</em> the integer value <code>404</code>. There are a lot of components at work here so let’s dissect this a bit more. ELMAH comes with a number of built-in assertions and you can even add your own. The most interesting of the assertions test their environment or context for a condition. If the condition is met, the assertion outcome is <em>true</em>. The <em>context</em> is usually the exception that is being raised and the HTTP transaction running its course. Both of these are available to the handler of the <code>Filtering</code> event as properties of the <code>ExceptionFilterEventArgs</code>. The <code>ErrorFilterModule</code> takes these two and adds a few more helper properties that are subsequently available as the total context for all assertions. The <code>&lt;equal&gt;</code> assertion above has a <code>binding</code> attribute that is actually a data-binding expression that you already know. It is the very same expression and syntax you specify to the <code>Eval</code> method when data-binding within the server-side markup of ASP.NET pages and user controls. This expression is evaluated against the context so naturally <code>HttpStatusCode</code> is a property of the context. The assertion evaluates the expression and uses the resulting value to compare against the literal given in the <code>value</code> attribute. To compare apples to apples and oranges to oranges, you have to specify the type of the value expected from the binding expression as well as that of the text in the <code>value</code> attribute. That is the purpose of the <code>type</code> attribute, which can be one of the <tt><a href="http://msdn.microsoft.com/en-us/library/system.typecode.aspx">TypeCode</a></tt> enumeration members. Consequently, the current set of <em>comparison assertions</em> are limited to primitive types represented by the <code>TypeCode</code> members (except <code>Empty</code>, <code>DBNull</code> and <code>Object</code>). This may seem limiting at first but it will suffice the majority of filtering you will need. For exotic cases, you can always write your own assertions. If you omit the <code>type</code> attribute then the value type of <code>String</code> is assumed. Finally, if the comparison succeeds, the assertion flags true and the exception is eventually dismissed. With this explanation in mind, here is a quick recap of what happens in the above example. First <code>HttpStatusCode</code> is evaluated against the filter context. Its result is converted to a 32-bit integer and compared against the value 404. If they equal, the assertion tells the the <code>ErrorFilterModule</code> that the exception matches the condition for dismissal.</p>
+
+<p>As mentioned earlier, ELMAH ships with several built-in assertions and you can use them together to create complex conditions. For example, here the <code>&lt;and&gt;</code>, <code>&lt;greater&gt;</code> and <code>&lt;lesser&gt;</code> assertions are used together to filter all exceptions where the HTTP status code for the response falls in the integer range 400 to 499 (inclusive).</p>
+
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;elmah&gt;</span>
+    ...
+    <span class="nt">&lt;errorFilter&gt;</span>
+        <span class="nt">&lt;test&gt;</span>
+            <span class="nt">&lt;and&gt;</span>
+                <span class="nt">&lt;greater</span> <span class="na">binding=</span><span class="s">&quot;HttpStatusCode&quot;</span> <span class="na">value=</span><span class="s">&quot;399&quot;</span> <span class="na">type=</span><span class="s">&quot;Int32&quot;</span> <span class="nt">/&gt;</span>
+                <span class="nt">&lt;lesser</span>  <span class="na">binding=</span><span class="s">&quot;HttpStatusCode&quot;</span> <span class="na">value=</span><span class="s">&quot;500&quot;</span> <span class="na">type=</span><span class="s">&quot;Int32&quot;</span> <span class="nt">/&gt;</span>
+            <span class="nt">&lt;/and&gt;</span>
+        <span class="nt">&lt;/test&gt;</span>
+    <span class="nt">&lt;/errorFilter&gt;</span>
+<span class="nt">&lt;/elmah&gt;</span></code></pre></div>
+
+<p>The <code>&lt;and&gt;</code> is a <em>composite assertion</em> that results to true when all its sub-assertions also result to true. Likewise, you also have the logical <code>&lt;or&gt;</code> and <code>&lt;not&gt;</code> composite assertions.</p>
+
+<h3 id="using-jscript">Using JScript</h3>
+
+<p>If you are familiar with the JavaScript programming language then you can also use the <code>&lt;jscript&gt;</code> assertion to specify a filtering condition as a simple JavaScript expression rather than using a whole tree of assertions. Below is an example of a complex condition expressed as JavaScript:</p>
+
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;elmah&gt;</span>
+    …
+    <span class="nt">&lt;errorFilter&gt;</span>
+        <span class="nt">&lt;test&gt;</span>
+            <span class="nt">&lt;jscript&gt;</span>
+                <span class="nt">&lt;expression&gt;</span>
+                <span class="cp">&lt;![CDATA[</span>
+<span class="cp">                // @assembly mscorlib</span>
+<span class="cp">                // @assembly System.Web, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</span>
+<span class="cp">                // @import System.IO</span>
+<span class="cp">                // @import System.Web</span>
+
+<span class="cp">                HttpStatusCode == 404</span>
+<span class="cp">                || $.BaseException instanceof FileNotFoundException </span>
+<span class="cp">                || $.BaseException instanceof HttpRequestValidationException</span>
+<span class="cp">                /* Using RegExp below (see http://msdn.microsoft.com/en-us/library/h6e2eb7w.aspx) */</span>
+<span class="cp">                || $.Context.Request.UserAgent.match(/crawler/i)                      </span>
+<span class="cp">                || $.Context.Request.ServerVariables[&#39;REMOTE_ADDR&#39;] == &#39;127.0.0.1&#39; // IPv4 only</span>
+<span class="cp">                ]]&gt;</span>
+                <span class="nt">&lt;/expression&gt;</span>
+            <span class="nt">&lt;/jscript&gt;</span>
+        <span class="nt">&lt;/test&gt;</span>
+    <span class="nt">&lt;/errorFilter&gt;</span>
+<span class="nt">&lt;/elmah&gt;</span></code></pre></div>
+
+<p><strong>NOTE!</strong> For versions earlier than ELMAH 1.2 SP2, replace <code>$</code> in the example above with the undocumented <code>$context</code> to work around <a href="http://code.google.com/p/elmah/issues/detail?id=278">issue #278</a>.</p>
+
+<p>The above causes errors to be filtered when any of the following is true:</p>
+
+<ul>
+  <li>The status code is set to <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404</a></li>
+  <li>The root/base cause is <a href="http://msdn.microsoft.com/en-us/library/system.io.filenotfoundexception.aspx"><code>System.IO.FileNotFoundException</code></a></li>
+  <li>The root/base cause is <a href="http://msdn.microsoft.com/en-us/library/system.web.httprequestvalidationexception.aspx"><code>System.Web.HttpRequestValidationException</code></a></li>
+  <li>The <a href="http://www.user-agents.org/">user agent</a> making the request identifies itself as “crawler”</li>
+  <li>The request is from the local machine</li>
+</ul>
+
+<h3 id="filtering-by-source">Filtering By Source</h3>
+
+<p>With version 1.1, ELMAH allows filtering based on the source module, enabling scenarios like logging all errors but only having a subset being e-mailed. The three properties available for binding that enable this are called <code>FilterSource</code>, <code>FilterSourceType</code> and <code>FilterSourceAssemblyName</code>. <code>FilterSource</code> represents the object requesting filtering whereas <code>FilterSourceType</code> and <code>FilterSourceAssemblyName</code> are just helpers that yield the source object’s type and assembly name. Using any of these, you can set up assertions that filter errors based on aspects of the source object. The following example shows how to prevent having 404 HTTP errors being mailed.</p>
+
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;elmah&gt;</span>
+    ...
+    <span class="nt">&lt;errorFilter&gt;</span>
+        <span class="nt">&lt;test&gt;</span>
+            <span class="nt">&lt;and&gt;</span>
+                <span class="nt">&lt;equal</span> <span class="na">binding=</span><span class="s">&quot;HttpStatusCode&quot;</span> <span class="na">value=</span><span class="s">&quot;404&quot;</span> <span class="na">type=</span><span class="s">&quot;Int32&quot;</span> <span class="nt">/&gt;</span>
+                <span class="nt">&lt;regex</span> <span class="na">binding=</span><span class="s">&quot;FilterSourceType.Name&quot;</span> <span class="na">pattern=</span><span class="s">&quot;mail&quot;</span> <span class="nt">/&gt;</span>
+            <span class="nt">&lt;/and&gt;</span>
+        <span class="nt">&lt;/test&gt;</span>
+    <span class="nt">&lt;/errorFilter&gt;</span>
+<span class="nt">&lt;/elmah&gt;</span></code></pre></div>
+
+<p>The <code>regex</code> assertion binds to the type name of the source object and checks if it contains the word “mail”. When the mailing module from ELMAH is filtering, <code>FilterSource</code> will be an instance of <code>Elmah.ErrorMailModule</code>. The assertion will therefore get the type name (irrespective of namespace) and filter the error if it contains “mail”. When the logging module from ELMAH is filtering, <code>FilterSource</code> will be an instance of <code>Elmah.ErrorLogModule</code> and the assertion will let the error pass through and get logged.</p>
+
+<h3 id="writing-your-own-assertion">Writing Your Own Assertion</h3>
+
+<p>Writing your own assertions is a two-step process. First, you create a class that implements the <code>IAssertion</code> interface from the <code>Elmah.Assertions</code> namespace. This interface contains only a single method called <code>Test</code> that receives a context as parameter and which should return a Boolean result depending on whether the condition represented by the assertion is met or not. Next, you create a factory method that will be called to initialize the assertion as the configuration is applied at run-time.</p>
+
+<p>Here is how the <code>IAssertion</code> interface is defined:</p>
+
+<div class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="k">public</span> <span class="k">interface</span> <span class="n">IAssertion</span>
+<span class="p">{</span>
+    <span class="kt">bool</span> <span class="nf">Test</span><span class="p">(</span><span class="kt">object</span> <span class="n">context</span><span class="p">);</span>
+<span class="p">}</span></code></pre></div>
+
+<p>And here is a very simple implementation of the interface that always returns <code>true</code> no matter what:</p>
+
+<div class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="k">namespace</span> <span class="nn">MyAssertions</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">sealed</span> <span class="k">class</span> <span class="nc">TrueAssertion</span> <span class="p">:</span> <span class="n">IAssertion</span>
+    <span class="p">{</span>
+        <span class="k">public</span> <span class="kt">bool</span> <span class="nf">Test</span><span class="p">(</span><span class="kt">object</span> <span class="n">context</span><span class="p">)</span> 
+        <span class="p">{</span>
+            <span class="k">return</span> <span class="k">true</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></div>
+
+<p>If you were to add this assertion as an error filter test then you effectively end up suppressing exceptions from being logged or mailed. Granted it is not very useful in practice, but it should be good enough to see its effect in action.</p>
+
+<p>As a second step, you need to setup a factory class for your assertions. The factory class is used to convert the configuration elements into <code>IAssertion</code> objects at runtime. Here is the assertion factory for creating <code>TrueAssertion</code> objects:</p>
+
+<div class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="k">namespace</span> <span class="nn">MyAssertions</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">sealed</span> <span class="k">class</span> <span class="nc">AssertionFactory</span>
+    <span class="p">{</span>
+        <span class="k">public</span> <span class="k">static</span> <span class="kt">bool</span> <span class="nf">always_true</span><span class="p">(</span><span class="n">XmlElement</span> <span class="n">config</span><span class="p">)</span> 
+        <span class="p">{</span>
+            <span class="k">return</span> <span class="k">new</span> <span class="nf">TrueAssertion</span><span class="p">();</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></div>
+
+<p>To keep things simple, the assertion factory class is <em>required</em> to follow a few conventions, which are:</p>
+
+<ol>
+  <li>The factory class must be public</li>
+  <li>The factory class must live in a namespace</li>
+  <li>The factory class must be called <code>AssertionFactory</code>.</li>
+</ol>
+
+<p>The factory class hosts factory methods, each of which is responsible for creating, configuring and returning an <code>IAssertion</code> object. Each factory method must observe the following rules:</p>
+
+<ol>
+  <li>The factory method must be <em>public</em>.</li>
+  <li>The factory method must be <em>static</em> (not bound to any class instance).</li>
+  <li>The return value of the factory method must be <code>IAssertion</code>.</li>
+  <li>The factory method must accept a single parameter of type <code>XmlElement</code>.</li>
+  <li>The factory method must be named after the XML configuration element. An underscore may be used in the method name where a dash is expected in the XML element name such that <code>not-equal</code> becomes <code>not_equal</code>.</li>
+</ol>
+
+<p>Now on to using the actual assertion in the configuration file:</p>
+
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;errorFilter&gt;</span>
+    <span class="nt">&lt;test</span> 
+        <span class="na">xmlns:my=</span><span class="s">&quot;http://schemas.microsoft.com/clr/nsassem/MyAssertions/MyAssertionsLib&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;my:always-true</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/test&gt;</span>
+<span class="nt">&lt;/errorFilter&gt;</span></code></pre></div>
+
+<p>Since our method was called <code>always_true</code>, it is a simple matter of naming the XML element correspondingly. In addition, you need to scope your element to an XML-based namespace whose value provides the necessary hints for the namespace and assembly where the factory class is located. In the above example, the <code>my</code> prefix corresponds to the XML namespace <code>http://schemas.microsoft.com/clr/nsassem/MyAssertions/MyAssertionsLib</code> and is used to scope <code>always-true</code>. Here is a deconstruction of how ELMAH converts the <code>always-true</code> element into an <code>IAssertion</code> object:</p>
+
+<ol>
+  <li>The element prefix is used to lookup the corresponding XML namespace. If there is no prefix then the assertion is assumed to be one of the built-in ones provided by ELMAH.</li>
+  <li>If the XML namesapce starts with <code>http://schemas.microsoft.com/clr/nsassem/</code> then the remaining two path components are extracted as the type namespace followed by the assembly name where the assertion class factory can be found.</li>
+  <li>The <code>MyAssertionsLib</code> assembly is loaded.</li>
+  <li>The assembly is probed for the type <code>MyAssertions.AssertionFactory</code>. Here, <code>AssertionFactory</code> is simply dot-appended to the type namespace extracted from the XML namespace.</li>
+  <li>The XML element name (<code>always-true</code>) is unmangled by replacing dashes with underscores and then used to find a public and static method on <code>MyAssertions.AssertionFactory</code> called <code>always_true</code>.</li>
+  <li>Finally, the <code>always_true</code> method is invoked (after passing signature compatibility checks) and given the entire XML configuration element as its sole parameter so that it can extract further information needed for the configuration of the actual assertion.</li>
+</ol>
+
+<p>In the sample case of <code>TrueAssertion</code>, there is no configuration to be done so the factory method simply creates a new instance and returns it. In fact, it wouldn’t even have to create a new instance each time since the assertion result is constant.</p>
+
+<h3 id="assertions-reference">Assertions Reference</h3>
+
+<ul>
+  <li>equal</li>
+  <li>greater</li>
+  <li>greater-or-equal</li>
+  <li>is-type</li>
+  <li>is-type-compatible</li>
+  <li>lesser</li>
+  <li>lesser-or-equal</li>
+  <li>not</li>
+  <li>not-equal</li>
+  <li>regex</li>
+  <li>jscript</li>
+</ul>
+
+<p>To be completed.</p>
+
+      </article>
+    </div>
+
+    <div class="clear"></div>
+
+  </div>
+</section>
+
+
+  <footer role="contentinfo">
+  <div class="grid">
+    <div class="unit one-third center-on-mobiles">
+      <p>&copy;&nbsp;2004 <a href="http://www.raboof.com/">Atif Aziz</a> under the terms of the <a href="http://www.apache.org/licenses/LICENSE-2.0" title="Apache License, Version 2.0">ALv2</a>.
+         Portions &copy;&nbsp;2008 <a href="http://tom.preston-werner.com/">Tom Preston-Werner</a> under <a href="https://github.com/jekyll/jekyll/blob/master/LICENSE">MIT&nbsp;License</a>.</p>
+    </div>
+    <div class="unit two-thirds align-right center-on-mobiles">
+      <p>Published: 2015-06-18 19:49 CEST</p>
+    </div>
+  </div>
+</footer>
+
+  <script>
+  var anchorForId = function (id) {
+    var anchor = document.createElement("a");
+    anchor.className = "header-link";
+    anchor.href      = "#" + id;
+    anchor.innerHTML = "<span class=\"sr-only\">Permalink</span><i class=\"fa fa-link\"></i>";
+    anchor.title = "Permalink";
+    return anchor;
+  };
+
+  var linkifyAnchors = function (level, containingElement) {
+    var headers = containingElement.getElementsByTagName("h" + level);
+    for (var h = 0; h < headers.length; h++) {
+      var header = headers[h];
+
+      if (typeof header.id !== "undefined" && header.id !== "") {
+        header.appendChild(anchorForId(header.id));
+      }
+    }
+  };
+
+  document.onreadystatechange = function () {
+    if (this.readyState === "complete") {
+      var contentBlock = document.getElementsByClassName("docs")[0]
+                      || document.getElementsByClassName("news")[0]
+                      || document.getElementsByClassName("standalone")[0];
+      if (!contentBlock) {
+        return;
+      }
+      for (var level = 1; level <= 6; level++) {
+        linkifyAnchors(level, contentBlock);
+      }
+    }
+  };
+</script>
+
+  
+
+</body>
+</html>

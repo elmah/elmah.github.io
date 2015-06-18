@@ -1,0 +1,253 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <title>ELMAH&mdash;Error Filtering Examples</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="generator" content="Jekyll v2.5.3">
+  <link rel="alternate" type="application/atom+xml" title="Recent commits to master branch" href="https://github.com/elmah/www/commits/master.atom">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic,900">
+  <link rel="stylesheet" href="/css/screen.css">
+  <!--[if lt IE 9]>
+  <script src="/js/html5shiv.min.js"></script>
+  <script src="/js/respond.min.js"></script>
+  <![endif]-->
+</head>
+
+
+<body class="wrap">
+  <header role="banner">
+  <nav class="mobile-nav show-on-mobiles">
+    <ul>
+  <li class="">
+    <a href="/">Home</a>
+  </li>
+  <li class="">
+    <a href="/downloads/"><i class="fa fa-download show-on-mobiles"></i><span class="hide-on-mobiles">Download</span></a>
+  </li>
+  <li>
+    <a href="https://code.google.com/p/elmah/source/checkout">Sources</a>
+  </li>
+  <li>
+    <a href="https://github.com/elmah/www"><span class="hide-on-mobiles">View on </span>GitHub</a>
+  </li>
+</ul>
+
+  </nav>
+  <div class="grid">
+    <div class="unit one-third center-on-mobiles">
+      <h1>
+        <i class="fa fa-bolt"></i>
+        <a href="/">
+          <span title="Error Logging Modules and Handlers">ELMAH</span>
+        </a>
+      </h1>
+    </div>
+    <nav class="main-nav unit two-thirds hide-on-mobiles">
+      <ul>
+  <li class="">
+    <a href="/">Home</a>
+  </li>
+  <li class="">
+    <a href="/downloads/"><i class="fa fa-download show-on-mobiles"></i><span class="hide-on-mobiles">Download</span></a>
+  </li>
+  <li>
+    <a href="https://code.google.com/p/elmah/source/checkout">Sources</a>
+  </li>
+  <li>
+    <a href="https://github.com/elmah/www"><span class="hide-on-mobiles">View on </span>GitHub</a>
+  </li>
+</ul>
+
+    </nav>
+  </div>
+</header>
+
+
+  <section class="standalone">
+  <div class="grid">
+
+    <div class="unit whole">
+      <article>
+        <h1>Error Filtering Examples</h1>
+        <p>Do you have a handy error fitler configuration that you have used time and time again? Why not share it? Drop it as a comment to this wiki and we’ll add it here.</p>
+
+<p>To learn more about how to filter harmless or noisy errors from your logs, see “<a href="/a/error-filtering/">Error Filtering</a>”.</p>
+
+<hr />
+
+<p>Filter requests for <a href="http://en.wikipedia.org/wiki/Favicon">favicon.ico</a> that end in a <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 status code</a>:</p>
+
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;errorFilter&gt;</span>
+    <span class="nt">&lt;test&gt;</span>
+        <span class="nt">&lt;and&gt;</span>
+            <span class="nt">&lt;equal</span> <span class="na">binding=</span><span class="s">&quot;HttpStatusCode&quot;</span> 
+                   <span class="na">value=</span><span class="s">&quot;404&quot;</span> <span class="na">type=</span><span class="s">&quot;Int32&quot;</span> <span class="nt">/&gt;</span>
+            <span class="nt">&lt;regex</span> <span class="na">binding=</span><span class="s">&quot;Context.Request.ServerVariables[&#39;URL&#39;]&quot;</span> 
+                   <span class="na">pattern=</span><span class="s">&quot;/favicon\.ico(\z|\?)&quot;</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;/and&gt;</span>
+    <span class="nt">&lt;/test&gt;</span>
+<span class="nt">&lt;/errorFilter&gt;</span></code></pre></div>
+
+<hr />
+
+<p>Filter requests ending in <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404</a> or those (using a <code>jscript</code> assertion) where where the last raised VB error was a negative number:</p>
+
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;errorFilter&gt;</span> 
+  <span class="nt">&lt;test&gt;</span> 
+    <span class="nt">&lt;or&gt;</span> 
+      <span class="nt">&lt;equal</span> <span class="na">binding=</span><span class="s">&quot;HttpStatusCode&quot;</span> <span class="na">value=</span><span class="s">&quot;404&quot;</span> <span class="na">type=</span><span class="s">&quot;Int32&quot;</span> <span class="nt">/&gt;</span> 
+      <span class="nt">&lt;jscript&gt;</span> 
+        <span class="nt">&lt;expression&gt;</span> 
+        <span class="cp">&lt;![CDATA[ </span>
+<span class="cp">        // @assembly Microsoft.VisualBasic, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a </span>
+<span class="cp">        // @import Microsoft.VisualBasic </span>
+<span class="cp">        Information.Err().Number &lt; 0 </span>
+<span class="cp">        ]]&gt;</span> 
+        <span class="nt">&lt;/expression&gt;</span> 
+      <span class="nt">&lt;/jscript&gt;</span> 
+    <span class="nt">&lt;/or&gt;</span> 
+  <span class="nt">&lt;/test&gt;</span> 
+<span class="nt">&lt;/errorFilter&gt;</span></code></pre></div>
+
+<p>For background on the above filter, see the “<a href="http://groups.google.com/group/elmah/browse_thread/thread/ccd5c1f47364f818">Err.raise, how do I filter out custom error numbers…</a>” thread in the <a href="http://groups.google.com/group/elmah">discussion group</a>.</p>
+
+<hr />
+
+<p>Filters all exceptions that occur on local requests:</p>
+
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;errorFilter&gt;</span>
+    <span class="nt">&lt;test&gt;</span>
+        <span class="nt">&lt;equal</span> <span class="na">binding=</span><span class="s">&quot;Context.Request.IsLocal&quot;</span> 
+               <span class="na">value=</span><span class="s">&quot;True&quot;</span> <span class="na">type=</span><span class="s">&quot;Boolean&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/test&gt;</span>
+<span class="nt">&lt;/errorFilter&gt;</span></code></pre></div>
+
+<hr />
+
+<p>Filter exceptions where the exception message contains certain words. In the example below, the words must be <em>potentially</em>, <em>dangerous</em>, <em>value</em>, <em>detected</em> and <em>client</em> and in the mentioned sequence. This will filter an exception where the message reads “A potentially dangerous Request.Path value was detected from the client”.</p>
+
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;errorFilter&gt;</span>
+    <span class="nt">&lt;test&gt;</span>
+        <span class="nt">&lt;regex</span> <span class="na">binding=</span><span class="s">&quot;Exception.Message&quot;</span> 
+               <span class="na">pattern=</span><span class="s">&quot;(?ix: \b potentially \b.+?\b dangerous \b.+?\b value \b.+?\b detected \b.+?\b client \b )&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/test&gt;</span>
+<span class="nt">&lt;/errorFilter&gt;</span></code></pre></div>
+
+<p>This example was created in response to the “<a href="http://groups.google.com/group/elmah/t/a6dd1503430cb69d">Filtering HttpException: A potentially dangerous Request.Path value was detected…</a>” thread in the <a href="http://groups.google.com/group/elmah">discussion group</a>.</p>
+
+<hr />
+
+<p>Filter exceptions of type <a href="http://msdn.microsoft.com/en-us/library/system.io.filenotfoundexception.aspx"><code>FileNotFoundException</code></a> only when an image is requested (request path ends in <code>.jpg</code>, <code>.gif</code> or <code>.png</code>). In addition, filters exceptions resulting from <a href="http://msdn.microsoft.com/en-us/library/system.web.httpcompileexception.aspx">compilation</a> or <a href="http://msdn.microsoft.com/en-us/library/system.web.httpparseexception.aspx">parsing</a> errors when the request is from local host and the application has <a href="http://msdn.microsoft.com/en-us/library/system.web.httpcontext.isdebuggingenabled.aspx">debugging enabled</a> (typical when developing dynamically compiled pages with in-line code).</p>
+
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;errorFilter&gt;</span>
+    <span class="nt">&lt;test&gt;</span>
+        <span class="nt">&lt;jscript&gt;</span>
+            <span class="nt">&lt;expression&gt;</span><span class="cp">&lt;![CDATA[</span>
+<span class="cp">            // @assembly mscorlib</span>
+<span class="cp">            // @assembly System.Web, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</span>
+<span class="cp">            // @import System.IO</span>
+<span class="cp">            // @import System.Web</span>
+<span class="cp">            </span>
+<span class="cp">            // 404s for images</span>
+<span class="cp">            </span>
+<span class="cp">            (($.HttpStatusCode == 404 </span>
+<span class="cp">              || $.BaseException instanceof FileNotFoundException) </span>
+<span class="cp">             &amp;&amp; $.Context.Request.Path.match(/\.(jpg|png|gif)$/i))</span>
+<span class="cp">            </span>
+<span class="cp">            // Compilation errors during development</span>
+<span class="cp">            </span>
+<span class="cp">            || ($.Context.IsDebuggingEnabled</span>
+<span class="cp">                &amp;&amp; $.Context.Request.IsLocal </span>
+<span class="cp">                &amp;&amp; ($.BaseException instanceof HttpCompileException</span>
+<span class="cp">                    || $.BaseException instanceof HttpParseException))</span>
+<span class="cp">            ]]&gt;</span><span class="nt">&lt;/expression&gt;</span>
+        <span class="nt">&lt;/jscript&gt;</span>
+    <span class="nt">&lt;/test&gt;</span>
+<span class="nt">&lt;/errorFilter&gt;</span></code></pre></div>
+
+<hr />
+
+<p>Filter exceptions of type <a href="http://msdn.microsoft.com/en-us/library/system.threading.tasks.taskcanceledexception.aspx"><code>TaskCanceledException</code></a> but only when the HTTP request method is HEAD and the user agent string contains the text “Microsoft Office Existence Discovery”.</p>
+
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;errorFilter&gt;</span>
+    <span class="nt">&lt;test&gt;</span>
+        <span class="nt">&lt;jscript&gt;</span>
+            <span class="nt">&lt;expression&gt;</span><span class="cp">&lt;![CDATA[</span>
+<span class="cp">            // @assembly mscorlib</span>
+<span class="cp">            // @import System.Threading.Tasks</span>
+<span class="cp">            </span>
+<span class="cp">            // HEAD requests from Microsoft Excel that may cause</span>
+<span class="cp">            // TaskCanceledException to be raised</span>
+<span class="cp">                     </span>
+<span class="cp">            ($.BaseException instanceof TaskCanceledException</span>
+<span class="cp">             &amp;&amp; &#39;HEAD&#39; === $.Context.Request.HttpMethod</span>
+<span class="cp">             &amp;&amp; $.Context.Request.UserAgent.match(/\bMicrosoft\s+Office\s+Existence\s+Discovery\b/i))</span>
+<span class="cp">            ]]&gt;</span><span class="nt">&lt;/expression&gt;</span>
+        <span class="nt">&lt;/jscript&gt;</span>
+    <span class="nt">&lt;/test&gt;</span>
+<span class="nt">&lt;/errorFilter&gt;</span></code></pre></div>
+
+<p>This error typically occurs when Microsoft Excel is setup with a <a href="http://office.microsoft.com/en-us/excel-help/get-external-data-from-a-web-page-HA010218472.aspx">Web Query</a> to asynchronous request handler in your application.</p>
+
+      </article>
+    </div>
+
+    <div class="clear"></div>
+
+  </div>
+</section>
+
+
+  <footer role="contentinfo">
+  <div class="grid">
+    <div class="unit one-third center-on-mobiles">
+      <p>&copy;&nbsp;2004 <a href="http://www.raboof.com/">Atif Aziz</a> under the terms of the <a href="http://www.apache.org/licenses/LICENSE-2.0" title="Apache License, Version 2.0">ALv2</a>.
+         Portions &copy;&nbsp;2008 <a href="http://tom.preston-werner.com/">Tom Preston-Werner</a> under <a href="https://github.com/jekyll/jekyll/blob/master/LICENSE">MIT&nbsp;License</a>.</p>
+    </div>
+    <div class="unit two-thirds align-right center-on-mobiles">
+      <p>Published: 2015-06-18 19:49 CEST</p>
+    </div>
+  </div>
+</footer>
+
+  <script>
+  var anchorForId = function (id) {
+    var anchor = document.createElement("a");
+    anchor.className = "header-link";
+    anchor.href      = "#" + id;
+    anchor.innerHTML = "<span class=\"sr-only\">Permalink</span><i class=\"fa fa-link\"></i>";
+    anchor.title = "Permalink";
+    return anchor;
+  };
+
+  var linkifyAnchors = function (level, containingElement) {
+    var headers = containingElement.getElementsByTagName("h" + level);
+    for (var h = 0; h < headers.length; h++) {
+      var header = headers[h];
+
+      if (typeof header.id !== "undefined" && header.id !== "") {
+        header.appendChild(anchorForId(header.id));
+      }
+    }
+  };
+
+  document.onreadystatechange = function () {
+    if (this.readyState === "complete") {
+      var contentBlock = document.getElementsByClassName("docs")[0]
+                      || document.getElementsByClassName("news")[0]
+                      || document.getElementsByClassName("standalone")[0];
+      if (!contentBlock) {
+        return;
+      }
+      for (var level = 1; level <= 6; level++) {
+        linkifyAnchors(level, contentBlock);
+      }
+    }
+  };
+</script>
+
+  
+
+</body>
+</html>
