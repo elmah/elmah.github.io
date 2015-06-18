@@ -556,6 +556,9 @@ td, th {
 .fa-download:before {
   content: "\f019"; }
 
+.fa-pencil:before {
+  content: "\f040"; }
+
 /* Base */
 * {
   -webkit-box-sizing: border-box;
