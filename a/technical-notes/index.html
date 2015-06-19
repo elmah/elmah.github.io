@@ -1,0 +1,678 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <title>ELMAH&mdash;Technical Notes</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="generator" content="Jekyll v2.5.3">
+  <link rel="alternate" type="application/atom+xml" title="Recent commits to master branch" href="https://github.com/elmah/www/commits/master.atom">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic,900">
+  <link rel="stylesheet" href="/css/screen.css">
+  <!--[if lt IE 9]>
+  <script src="/js/html5shiv.min.js"></script>
+  <script src="/js/respond.min.js"></script>
+  <![endif]-->
+</head>
+
+
+<body class="wrap">
+  <header role="banner">
+  <nav class="mobile-nav show-on-mobiles">
+    <ul>
+  <li class="">
+    <a href="/">Home</a>
+  </li>
+  <li class="">
+    <a href="/downloads/"><i class="fa fa-download show-on-mobiles"></i><span class="hide-on-mobiles">Download</span></a>
+  </li>
+  <li>
+    <a href="https://code.google.com/p/elmah/source/checkout">Sources</a>
+  </li>
+  <li>
+    <a href="https://github.com/elmah/www"><span class="hide-on-mobiles">View on </span>GitHub</a>
+  </li>
+</ul>
+
+  </nav>
+  <div class="grid">
+    <div class="unit one-third center-on-mobiles">
+      <h1>
+        <i class="fa fa-bolt"></i>
+        <a href="/">
+          <span title="Error Logging Modules and Handlers">ELMAH</span>
+        </a>
+      </h1>
+    </div>
+    <nav class="main-nav unit two-thirds hide-on-mobiles">
+      <ul>
+  <li class="">
+    <a href="/">Home</a>
+  </li>
+  <li class="">
+    <a href="/downloads/"><i class="fa fa-download show-on-mobiles"></i><span class="hide-on-mobiles">Download</span></a>
+  </li>
+  <li>
+    <a href="https://code.google.com/p/elmah/source/checkout">Sources</a>
+  </li>
+  <li>
+    <a href="https://github.com/elmah/www"><span class="hide-on-mobiles">View on </span>GitHub</a>
+  </li>
+</ul>
+
+    </nav>
+  </div>
+</header>
+
+
+  <section class="standalone">
+  <div class="grid">
+
+    <div class="unit whole">
+      <article>
+        <div class="improve right hide-on-mobiles">
+          <a href="https://github.com/elmah/www/edit/master/TechnicalNotes.md"><i class="fa fa-pencil"></i> &nbsp;Improve this page</a>
+        </div>
+        <h1>Technical Notes</h1>
+        <p><a href="https://www.assembla.com/code/elmah/subversion/nodes/236">Revision 236</a><br />
+Written by <a href="http://www.raboof.com/">Atif Aziz</a><br />
+Applies to <a href="http://www.asp.net/">Microsoft ASP.NET 1.1</a> and <a href="http://elmah.googlecode.com/files/GDN-ELMAH-1.0.5527-setup.zip">ELMAH v1.0 (Build 5527)</a><br />
+See also: <del><a href="http://workspaces.gotdotnet.com/elmah">GotDotNet Workspace for ELMAH</a></del></p>
+
+<ul id="markdown-toc">
+  <li><a href="#purpose-of-this-document" id="markdown-toc-purpose-of-this-document">Purpose of This Document</a></li>
+  <li><a href="#overview" id="markdown-toc-overview">Overview</a></li>
+  <li><a href="#quick-start" id="markdown-toc-quick-start">Quick Start</a></li>
+  <li><a href="#a-note-on-the-implementation" id="markdown-toc-a-note-on-the-implementation">A Note on the Implementation</a></li>
+  <li><a href="#architectural-overview" id="markdown-toc-architectural-overview">Architectural Overview</a>    <ul>
+      <li><a href="#error-the-phantom-exception" id="markdown-toc-error-the-phantom-exception">Error: The Phantom Exception</a></li>
+      <li><a href="#errorlog-and-errorlogentry" id="markdown-toc-errorlog-and-errorlogentry">ErrorLog and ErrorLogEntry</a></li>
+      <li><a href="#sqlerrorlog" id="markdown-toc-sqlerrorlog">SqlErrorLog</a></li>
+      <li><a href="#memoryerrorlog" id="markdown-toc-memoryerrorlog">MemoryErrorLog</a></li>
+      <li><a href="#binding-to-the-log-implementation" id="markdown-toc-binding-to-the-log-implementation">Binding to the Log Implementation</a></li>
+      <li><a href="#the-handlers-to-the-errorlog" id="markdown-toc-the-handlers-to-the-errorlog">The Handlers to the ErrorLog</a></li>
+      <li><a href="#errormailmodule" id="markdown-toc-errormailmodule">ErrorMailModule</a></li>
+    </ul>
+  </li>
+  <li><a href="#footnotes" id="markdown-toc-footnotes">Footnotes</a></li>
+</ul>
+
+<h1 id="purpose-of-this-document">Purpose of This Document</h1>
+
+<p>ELMAH was originally introduced with the <a href="http://msdn.microsoft.com/">MSDN</a> article “<a href="http://msdn2.microsoft.com/en-us/library/aa479332.aspx">Using HTTP Modules and Handlers to Create Pluggable ASP.NET Components</a>.” The goal of the article was to demonstrate how HTTP modules and handlers can be used in ASP.NET to provide a high degree of componentization that goes just beyond the classical reuse through controls. It was not the goal of the article to discuss the implementation details of ELMAH or the background to some of its design. That is the purpose of this document in the form of technical notes and using a casual voice.</p>
+
+<p>Please bear in mind that this is a “living” document that will be expanded as needed.</p>
+
+<h1 id="overview">Overview</h1>
+
+<p>ELMAH provides two HTTP modules and a set of HTTP handlers that can be used as a foundation for a complete error logging, notification and display solution for web applications. You can enable ELMAH for one or more web applications or for all web applications running on a machine. All you have to do is deploy a single assembly and make changes to the configuration file. There is no need to recompile or re-deploy an application.</p>
+
+<p>The primary goal of ELMAH 1.0 is to demonstrate, by way of example, how HTTP handlers and modules can be used as a very high-level form of componentization, enabling entire sets of functionalities to be developed, packaged and deployed as a single unit and independent of web applications.</p>
+
+<p>Here’s how it works. There are two independent modules, called <code>ErrorLogModule</code> and <code>ErrorMailModule</code>. Both of these subscribe to the <code>Error</code> event of <code>HttpApplication</code> in order to listen for unhandled exceptions that bubble out of the main web application code. Exceptions that are handled and swallowed by anyone along the stack are never seen by these modules, including those cleared using the <a href="http://msdn2.microsoft.com/en-us/library/system.web.httpcontext.clearerror.aspx"><code>ClearError</code></a> method on an <a href="http://msdn2.microsoft.com/en-us/library/system.web.httpcontext.aspx"><code>HttpContext</code></a> instance.</p>
+
+<p>The <code>ErrorMailModule</code> is the simpler of the two, so let’s talk about that one first. When it receives the <code>Error</code> event, it creates an e-mail message, writes out the error details in the body and sends it off to a designated address. The solution comes with a standard implementation that formats the error as an HTML document, as shown in Figure 1. You can also provide your own implementation in case you don’t like the default formatting.</p>
+
+<p><img src="http://elmah.googlecode.com/svn/wiki/technote-fig-01.png" alt="http://elmah.googlecode.com/svn/wiki/technote-fig-01.png" /></p>
+
+<p>This basically takes care of the notification of errors that occur in a web application. There’s a second form of notification, but I’ll talk about that a little later.</p>
+
+<p>When the <code>ErrorLogModule</code> receives the <code>Error</code> event, it goes ahead and logs it to a store. The store is defined by an implementation of the abstract <code>ErrorLog</code> class. The solution comes with a concrete implementation for Microsoft SQL Server 2000 (see footnote 1) that resides in the <code>SqlErrorLog</code> class and an in-memory implementation that resides in the <code>MemoryErrorLog</code> class. The majority of the remaining types in the solution are a set of handlers that provide the user interface for viewing the log. Like the module, the handlers also work off an <code>ErrorLog</code> implementation so if you go ahead roll your own implementations over, say the file system, Microsoft Access or an Oracle database, then the handlers will work against them too. Figure 2 shows the results from one of the handlers that displays a summary of the latest errors recorded for an application.</p>
+
+<p><img src="http://elmah.googlecode.com/svn/wiki/technote-fig-02.png" alt="http://elmah.googlecode.com/svn/wiki/technote-fig-02.png" /></p>
+
+<p>When one of the <code>[Detail]</code> links is clicked, another handler is invoked that renders the details of the selected error on a separate page. Figure 3 shows one such page in action.</p>
+
+<p><img src="http://elmah.googlecode.com/svn/wiki/technote-fig-03.png" alt="http://elmah.googlecode.com/svn/wiki/technote-fig-03.png" /></p>
+
+<p>These days, you can’t write a web-based solution that’s considered fashionable without involving RSS in one way or another. So to be totally <em>en vogue</em>, one of the handlers that I’ve provided renders the last 15 errors recorded in the error log as a <a href="http://cyber.law.harvard.edu/rss/rss.html">RSS</a> feed. This is the second form of notification that I mentioned earlier. A sample output of the RSS feed can be seen in Figure 4.</p>
+
+<p><img src="http://elmah.googlecode.com/svn/wiki/technote-fig-04.png" alt="http://elmah.googlecode.com/svn/wiki/technote-fig-04.png" /></p>
+
+<p>It’s not as detailed as the mail-based counterpart, of course, but it nevertheless allows developers, administrators and operators alike to use their favorite RSS aggregator to receive most recently logged errors as news items. If your RSS aggregator also pops a toaster sort of window à la instant messengers like MSN Messenger, then the errors will really get your attention. Sometimes, e-mails can take time to make their way to your inbox as they are push through the various systems. With an RSS news aggregator, however, you are in pull mode and consequently more in control of how often a feed is polled. Either way, you’ll get a notification through a pull or push method.</p>
+
+<h1 id="quick-start">Quick Start</h1>
+
+<p>So with all these modules and handlers in hand, the next question is how to use and enable them in a web application. Let’s start with a tour for enabling logging for a single application. Open the <code>web.config</code> for any desired web application and add the following line to the <code>&lt;httpHandlers&gt;</code> section:</p>
+
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;add</span> <span class="na">verb=</span><span class="s">&quot;POST,GET,HEAD&quot;</span> 
+     <span class="na">path=</span><span class="s">&quot;elmah/default.aspx&quot;</span>
+     <span class="na">type=</span><span class="s">&quot;GotDotNet.Elmah.ErrorLogPageFactory, GotDotNet.Elmah, Version=1.0.5527.0, Culture=neutral, PublicKeyToken=978d5e1bd64b33e5&quot;</span> <span class="nt">/&gt;</span></code></pre></div>
+
+<p>Copy the <code>GotDotNet.Elmah.dll</code> assembly to the bin folder and that’s it. At this point, you can navigate to the specified path (see footnote 2) and see a page similar to Figure 5:</p>
+
+<p><img src="http://elmah.googlecode.com/svn/wiki/technote-fig-05.png" alt="http://elmah.googlecode.com/svn/wiki/technote-fig-05.png" /></p>
+
+<p>Since there are no errors yet, the page is pretty much empty. If you generate an exception in your application, you still won’t see any errors here. This is because we haven’t added the logging module, so let’s do that now. Go to the <code>&lt;httpModules&gt;</code> section and add the following line:</p>
+
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ErrorLog&quot;</span>
+     <span class="na">type=</span><span class="s">&quot;GotDotNet.Elmah.ErrorLogModule, GotDotNet.Elmah, Version=1.0.5527.0, Culture=neutral, PublicKeyToken=978d5e1bd64b33e5&quot;</span> <span class="nt">/&gt;</span></code></pre></div>
+
+<p>If you generate an error now then the error log will display it. If you can’t think of a way to generate an exception and test the functionality then don’t worry. The solution comes with a TestException that can be generated at any time by appending /test to the path for the handlers. So in the address bar of the browser, type:</p>
+
+<pre><code>http://www.example.com/myapp/elmah/default.aspx/test
+</code></pre>
+
+<p>If custom errors are disabled then you should see the standard ASP.NET error page that looks like this (assuming that custom errors are off):</p>
+
+<p><img src="http://elmah.googlecode.com/svn/wiki/technote-fig-06.png" alt="http://elmah.googlecode.com/svn/wiki/technote-fig-06.png" /></p>
+
+<p>The difference this time is that the log also contains a record of this error so let’s check that out. Go back to error log root page (see footnote 3) and this time you should see an entry in there:</p>
+
+<p><img src="http://elmah.googlecode.com/svn/wiki/technote-fig-07.png" alt="http://elmah.googlecode.com/svn/wiki/technote-fig-07.png" /></p>
+
+<p>Now click on the link next to the error message to see the details of the error entry. The next page should look similar to this:</p>
+
+<p><img src="http://elmah.googlecode.com/svn/wiki/technote-fig-08.png" alt="http://elmah.googlecode.com/svn/wiki/technote-fig-08.png" /></p>
+
+<p>Note that in addition to the basic error information, web collections such as the server variables are also captured and displayed. Now let’s generate another exception. In this case, we’re going to make a fault in the error page handler itself. In the query string, you should see a parameter named “id” whose value is a GUID. Change it so that it no longer is a valid GUID. For example, replace the last character with an <code>x</code>. Not surprisingly, you should now see a <code>FormatException</code>:</p>
+
+<p><img src="http://elmah.googlecode.com/svn/wiki/technote-fig-09.png" alt="http://elmah.googlecode.com/svn/wiki/technote-fig-09.png" /></p>
+
+<p>Now let’s go back and see what’s in the log4 (see footnote 4). You should see two entries:</p>
+
+<p><img src="http://elmah.googlecode.com/svn/wiki/technote-fig-10.png" alt="http://elmah.googlecode.com/svn/wiki/technote-fig-10.png" /></p>
+
+<p>If you dig into the details of this new entry, you should notice something different this time:</p>
+
+<p><img src="http://elmah.googlecode.com/svn/wiki/technote-fig-11.png" alt="http://elmah.googlecode.com/svn/wiki/technote-fig-11.png" /></p>
+
+<p>There’s an extra link that says, “See ASP.NET error message in full view.” When you click this, you’ll see a full blown HTML page that is the exact message that ASP.NET generated at the time of the exception (see footnote 5)! This means that even if you enable custom errors in you web application (typical of when you go to production, for example), the log can capture the original message that we’ve all come to love and rely upon. Haven’t we all been there? You write a web application, deploy it to production and then you get this dreadful page:</p>
+
+<p><img src="http://elmah.googlecode.com/svn/wiki/technote-fig-12.png" alt="http://elmah.googlecode.com/svn/wiki/technote-fig-12.png" /></p>
+
+<p>This is the point where you wish you could see what’s going on behind. So what’s your first instinct? Go back turn off custom errors completely so you can view the message while hoping that no customer hits the web site in the same time frame in which you are troubleshooting. Now with the error log, you don’t have to worry about that anymore. If you see this page, go to the error log and get the full-blown page (see footnote 6).</p>
+
+<p>So far, all the logging has been taking place in an in-memory log (see footnote 7) that does not survive application restarts or failures. In fact, if you just touch your web.config by saving it then the application will restart and you’ll notice that the log is empty again. Let’s try something more robust and reliable like using SQL Server as the store for the log. Create a new database called <code>ELMAH</code> and run the supplied SQL script (see footnote 8) to create the required table and related stored procedures.</p>
+
+<p>These entries basically introduce new configuration elements to the runtime’s configuration system, telling it that if it sees a certain element in the configuration file, then it should use a certain <a href="http://msdn2.microsoft.com/en-us/library/system.configuration.iconfigurationsectionhandler.aspx"><code>IConfigurationSectionHandler</code></a> implementation to process its contents. Here, <code>&lt;section&gt;</code> is adding a new section called <code>errorLog</code>, whose handler is in fact a factory-supplied section handler from the <a href="http://msdn.microsoft.com/netframework/programming/bcl/">BCL (Base Class Library)</a>. The <code>&lt;sectionGroup&gt;</code> does exactly what its name suggests. It just introduces a grouping element. There is no handler class associated with it. If you’ve got several related sections then it’s usually a good idea to group them together. We’ll be introducing yet another section later on so that’s why the group is being defined at this time. It often helps to think of a section group as a namespace.</p>
+
+<p>Now we can go ahead and configure the error log as follows:</p>
+
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;gotdotnet.elmah&gt;</span>
+  <span class="nt">&lt;errorLog</span> 
+    <span class="na">type=</span><span class="s">&quot;GotDotNet.Elmah.SqlErrorLog, GotDotNet.Elmah, Version=1.0.5527.0, Culture=neutral, PublicKeyToken=978d5e1bd64b33e5&quot;</span> 
+    <span class="na">connectionString=</span><span class="s">&quot;Server=.;Database=ELMAH;Trusted_Connection=True&quot;</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/gotdotnet.elmah&gt;</span></code></pre></div>
+
+<p>The <code>type</code> attribute on <code>errorLog</code> specifies the class that now serves as the error log implementation (<code>SqlErrorLog</code>). Change the <code>connectionString</code> attribute as needed. With this in place, you can try to generate once more some exceptions (like the test one earlier) and see that errors are indeed logged into the database and survive the application’s lifetime.</p>
+
+<p>You can also get to the RSS feed by simply appending <code>/rss</code> to the root of the error log’s path. Go ahead and try it against you favorite RSS news aggregator application.</p>
+
+<p>Now let’s add the final piece, which is getting an e-mail upon an exception. For this, add the following module to the configuration file:</p>
+
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;add</span> 
+  <span class="na">name=</span><span class="s">&quot;ErrorMail&quot;</span> 
+  <span class="na">type=</span><span class="s">&quot;GotDotNet.Elmah.ErrorMailModule, GotDotNet.Elmah, Version=1.0.5527.0, Culture=neutral, PublicKeyToken=978d5e1bd64b33e5&quot;</span> <span class="nt">/&gt;</span></code></pre></div>
+
+<p>And the following section handler under the <code>gotdotnet.elmah</code> section group registered earlier:</p>
+
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;configSections&gt;</span>
+  <span class="nt">&lt;sectionGroup</span> <span class="na">name=</span><span class="s">&quot;gotdotnet.elmah&quot;</span><span class="nt">&gt;</span> 
+    <span class="nt">&lt;section</span> 
+      <span class="na">name=</span><span class="s">&quot;errorLog&quot;</span> 
+      <span class="na">type=</span><span class="s">&quot;System.Configuration.SingleTagSectionHandler, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089&quot;</span> <span class="nt">/&gt;</span> 
+    <span class="nt">&lt;section</span> 
+      <span class="na">name=</span><span class="s">&quot;errorMail&quot;</span> 
+      <span class="na">type=</span><span class="s">&quot;System.Configuration.SingleTagSectionHandler, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089&quot;</span> <span class="nt">/&gt;</span> 
+  <span class="nt">&lt;/sectionGroup&gt;</span> 
+<span class="nt">&lt;/configSections&gt;</span></code></pre></div>
+
+<p>The new section can now be configured as shown error:</p>
+
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;gotdotnet.elmah&gt;</span>
+  <span class="nt">&lt;errorLog</span> 
+    <span class="na">type=</span><span class="s">&quot;GotDotNet.Elmah.SqlErrorLog, GotDotNet.Elmah, Version=1.0.5527.0, Culture=neutral, PublicKeyToken=978d5e1bd64b33e5&quot;</span> 
+    <span class="na">connectionString=</span><span class="s">&quot;Server=.;Database=ELMAH;Trusted_Connection=True&quot;</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;errorMail</span> <span class="na">to=</span><span class="s">&quot;john.doe@example.com&quot;</span> <span class="nt">/&gt;</span> 
+<span class="nt">&lt;/gotdotnet.elmah&gt;</span></code></pre></div>
+
+<p>The minimal setting required by the error mailing module is the recipient’s e-mail address, which is specified here using the <code>to</code> attribute (see footnote 9). Now if the application generates any exceptions then you should receive an e-mail in addition to it being logged in the database.</p>
+
+<p>Note that all of the modules and handlers function fairly independent of each other so you can enable and disable them individually. For example, if you remove entry that registers the HTTP handler with ASP.NET then you will not be able to view the error log although logging will continue working. If you remove the entry for the logging module instead, then the log can still be viewed via the handlers but no new errors will be logged. The same is applicable for the mailing module.</p>
+
+<p>Note also the error log handlers can be secured using the normal role-based security of ASP.NET. You’ll need to just <a href="http://support.microsoft.com/default.aspx?kbid=815174">use the location element on the configured path</a>.</p>
+
+<p>Up to this point, we’ve only considered a single web application. However, if you just take all the settings and drop them into the <code>machine.config</code> then the same facility becomes available machine-wide and to all web applications. You don’t even have to copy the assembly to the <code>bin</code> directory of each application since it will go in the GAC (see footnote 10). You can append <code>elmah/default.aspx</code> to the virtual root of any application and get its private error log (see footnote 11). The error mail facility will also be automatically available to all applications. Of course, each individual application is free to remove entries from the sections related to handlers and modules and disable the feature. In fact, a single application can even choose its own error log store by changing the connection string in its local <code>web.config</code>. All other settings will be just inherited from the machine configuration file. This really illustrates the awesome power of componentizing web application aspects this way and is the heart of the approach demonstrated by ELMAH. Even an Application Server Provider (ASP) could offer error logging, viewing and mailing to all hosted applications as a built-in facility without requiring any change in the hosted application code. So start thinking about how you can refactor some aspects of your web application into handlers and modules. You should aim to reach a level of componentization that allows applications to acquire some functionality by simply deploying the assembly and adding some configuration. In the next part of the article</p>
+
+<h1 id="a-note-on-the-implementation">A Note on the Implementation</h1>
+
+<p>At this stage we’re ready to dig into the implementation details, but before doing that, I’d like to make a note about the design philosophy of ELMAH as sample solution. Bear in the mind that the overall goal of ELMAH (as a sample accompanying the original article) was to demonstrate an approach to componentizing an entire aspect of a web application. It is sample code after all and such its purpose is not to provide a comprehensive solution in terms of customization. The sample tries to do a few things and do them well, even though I’ve gone to some lengths to encapsulate implementation details and provide extensibility wherever possible (see footnote 12). The accompanying code is a vastly reduced version of a full-blown solution that is being used in production applications. When trimming down the code, I had to make a lot of hard decisions about what to keep and what to cut out. In the end, the point was to provide a reference implementation of the overall idea being illustrated by the article. One size barely fits all, so you are more than welcome to take the sample as the foundation for your own version. One of the major guiding factors was that I did not want the number of classes to sprawl out of control by factoring out as many ideas into their leanest and meanest set of interfaces and protocols.</p>
+
+<h1 id="architectural-overview">Architectural Overview</h1>
+
+<p>Figure 13 depicts an architectural overview of the main classes in the solution. The diagram is not based on any particular modeling system or theory. It roughly shows how the classes relate to each other and what they do using a simple, convenient and self-explanatory notation.</p>
+
+<p><img src="http://elmah.googlecode.com/svn/wiki/technote-fig-13.png" alt="http://elmah.googlecode.com/svn/wiki/technote-fig-13.png" /></p>
+
+<h2 id="error-the-phantom-exception">Error: The Phantom Exception</h2>
+
+<p>The <code>Error</code> class is a central piece of the entire error logging and mailing solution, so it’s important to understand it first. One of the problems with exceptions is that they’re good for communicating errors along the code stack <em>and</em> especially while the code is running, but they don’t make great candidates for logging or long-term storage purposes. Sure, they support serialization and you could just blast an exception to some storage as a binary blob, but de-serialization adds a whole number complications if you don’t have the right assemblies and types available. This makes them less portable with the containing storage. Moreover, during development, types come and go and details change, but you want the logging architecture to be
+rather stable and independent. You also want to be able to ship the log to another machine and view it from there. Actually, as far as the log is concerned, it should be an “informational” trace of the errors that occurred rather than trying to maintain 100% fidelity to the entire state of the exceptions.</p>
+
+<p>This is where the <code>Error</code> class comes in. It’s a loose and abstract digest of an exception for informational purposes. Put another way, it’s the lingering “ghost” or remains of a once living and kicking exception. The <code>Error</code> is just a holder of properties (see footnote 13) deemed fundamental along with some state that may eventually help in diagnosing the error. An example of the latter is web collections like <a href="http://msdn2.microsoft.com/en-us/library/system.web.httprequest.servervariables.aspx"><code>ServerVariables</code></a>, <a href="http://msdn2.microsoft.com/en-us/library/system.web.httprequest.querystring.aspx"><code>QueryString</code></a>, <a href="http://msdn2.microsoft.com/en-us/library/system.web.httprequest.form.aspx"><code>Form</code></a> and <a href="http://msdn2.microsoft.com/en-us/library/system.web.httprequest.cookie.aspx"><code>Cookie</code></a>. Some of the properties of the <code>Error</code> object like <code>Source</code> and <code>Message</code> correspond directly to those of an <code>Exception</code>. However, almost all properties are “loosely” defined (see following table). That is, the <code>Error</code> object does not mandate, for example, that the <code>Type</code> strictly reflect the type name of the <code>Exception</code> class (although that’s what’s done in the code). It’s really just a string that is meant to be representative of the type of error that occurred. If you want to just put the word “Script” to describe the type of the error then that’s fine. All that said, the <code>Error</code> object has constructors that allow you to convert an <code>Exception</code> into an <code>Error</code>. It will use the properties of the exception to most reasonably fill up the properties of the <code>Error</code> object. If you also provide an <code>HttpContext</code> instance, then it will make a copy of the web collections associated with the request for diagnostic purposes (see footnote 14).</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Property</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Exception</code></td>
+      <td>The Exception instance represented by this error. This is a run-time property only that is not persisted during XML serialization.</td>
+    </tr>
+    <tr>
+      <td><code>ApplicationName</code></td>
+      <td>The name of application in which this error occurred.</td>
+    </tr>
+    <tr>
+      <td><code>HostName</code></td>
+      <td>The name of host machine where this error occurred. A good default is <a href="http://msdn2.microsoft.com/en-us/library/system.environment.machinename.aspx"><code>Environment.MachineName</code></a>.</td>
+    </tr>
+    <tr>
+      <td><code>Type</code></td>
+      <td>The type, class or category of the error. Usually this would be the full type name (sans the assembly qualification) of the exception.</td>
+    </tr>
+    <tr>
+      <td><code>Source</code></td>
+      <td>The source of the error, usually the same as the <code>[Message</code>](http://msdn2.microsoft.com/en-us/library/system.exception.message.aspx) property of an <a href="http://msdn2.microsoft.com/en-us/library/system.exception.aspx"><code>Exception</code></a> object.</td>
+    </tr>
+    <tr>
+      <td><code>Message</code></td>
+      <td>A brief text describing the error, usually the same as the <a href="http://msdn2.microsoft.com/en-us/library/system.exception.message.aspx"><code>Message</code></a> property of an <a href="http://msdn2.microsoft.com/en-us/library/system.exception.aspx"><code>Exception</code></a> object.</td>
+    </tr>
+    <tr>
+      <td><code>Detail</code></td>
+      <td>Detailed text of the error, such as the complete stack trace.</td>
+    </tr>
+    <tr>
+      <td><code>User</code></td>
+      <td>The user logged into the application at the time of the error, such as that returned by <a href="http://msdn2.microsoft.com/en-us/library/system.security.principal.iidentity.name.aspx"><code>Thread.CurrentPrincipal.Identity.Name</code></a>.</td>
+    </tr>
+    <tr>
+      <td><code>Time</code></td>
+      <td>The date and time at which the error occurred. This is always in local time.</td>
+    </tr>
+    <tr>
+      <td><code>StatusCode</code></td>
+      <td>The status code being returned in the response header as a result of the error . For example, this is 404 for a <a href="http://msdn2.microsoft.com/en-us/library/system.io.filenotfoundexception.aspx"><code>FileNotFoundException</code></a>.</td>
+    </tr>
+    <tr>
+      <td><code>WebHostHtmlMessage</code></td>
+      <td>The default HTML message that the web host (ASP.NET) would have generated in absence of custom error pages.</td>
+    </tr>
+    <tr>
+      <td><code>ServerVariables</code></td>
+      <td>A <a href="http://msdn2.microsoft.com/en-us/library/system.collections.specialized.namevaluecollection.aspx"><code>NameValueCollection</code></a> of web server variables, such as those contained in <a href="http://msdn2.microsoft.com/en-us/library/system.web.httprequest.servervariables.aspx"><code>HttpRequest.ServerVariables</code></a>.</td>
+    </tr>
+    <tr>
+      <td><code>QueryString</code></td>
+      <td>A <a href="http://msdn2.microsoft.com/en-us/library/system.collections.specialized.namevaluecollection.aspx"><code>NameValueCollection</code></a> of HTTP query string variables, such as those contained in <a href="http://msdn2.microsoft.com/en-us/library/system.web.httprequest.querystring.aspx"><code>HttpRequest.QueryString</code></a>.</td>
+    </tr>
+    <tr>
+      <td><code>Form</code></td>
+      <td>A <a href="http://msdn2.microsoft.com/en-us/library/system.collections.specialized.namevaluecollection.aspx"><code>NameValueCollection</code></a> of form variables, such as those contained in <a href="http://msdn2.microsoft.com/en-us/library/system.web.httprequest.form.aspx"><code>HttpRequest.Form</code></a>.</td>
+    </tr>
+    <tr>
+      <td><code>Cookies</code></td>
+      <td>A <a href="http://msdn2.microsoft.com/en-us/library/system.collections.specialized.namevaluecollection.aspx"><code>NameValueCollection</code></a> of cookies sent by the client, such as those contained in <a href="http://msdn2.microsoft.com/en-us/library/system.web.httprequest.cookies.aspx"><code>HttpRequest.Cookies</code></a>.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The <code>Error</code> class also sports XML serialization via its <code>ToXml</code> and <code>FromXml</code> methods. Here’s an example of how it looks like (see footnote 16):</p>
+
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;error</span> 
+  <span class="na">application=</span><span class="s">&quot;/LM/W3SVC/1/Root/ElmahDemo&quot;</span> 
+  <span class="na">host=</span><span class="s">&quot;ATIFA01&quot;</span> 
+  <span class="na">type=</span><span class="s">&quot;System.IndexOutOfRangeException&quot;</span> 
+  <span class="na">message=</span><span class="s">&quot;Index was outside the bounds of the array.&quot;</span> 
+  <span class="na">detail=</span><span class="s">&quot;...&quot;</span> 
+  <span class="na">user=</span><span class="s">&quot;domain\johndoe&quot;</span> 
+  <span class="na">time=</span><span class="s">&quot;2004-06-11T16:25:07.7570000+02:00&quot;</span> 
+  <span class="na">statusCode=</span><span class="s">&quot;500&quot;</span> 
+  <span class="na">webHostHtmlMessage=</span><span class="s">&quot;...&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;serverVariables&gt;</span>
+    <span class="nt">&lt;item</span> <span class="na">name=</span><span class="s">&quot;ALL_HTTP&quot;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;value</span> <span class="na">string=</span><span class="s">&quot;...&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/item&gt;</span>
+    <span class="nt">&lt;item</span> <span class="na">name=</span><span class="s">&quot;ALL_RAW&quot;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;value</span> <span class="na">string=</span><span class="s">&quot;...&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/item&gt;</span>
+    <span class="nt">&lt;item</span> <span class="na">name=</span><span class="s">&quot;APPL_MD_PATH&quot;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;value</span> <span class="na">string=</span><span class="s">&quot;/LM/W3SVC/1/Root/ElmahDemo&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/item&gt;</span>
+    <span class="nt">&lt;item</span> <span class="na">name=</span><span class="s">&quot;APPL_PHYSICAL_PATH&quot;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;value</span> <span class="na">string=</span><span class="s">&quot;C:\Demo&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/item&gt;</span>
+    <span class="nt">&lt;item</span> <span class="na">name=</span><span class="s">&quot;AUTH_TYPE&quot;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;value</span> <span class="na">string=</span><span class="s">&quot;Negotiate&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/item&gt;</span>
+    <span class="nt">&lt;item</span> <span class="na">name=</span><span class="s">&quot;AUTH_USER&quot;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;value</span> <span class="na">string=</span><span class="s">&quot;domain\johndoe&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/item&gt;</span>
+    <span class="nt">&lt;item</span> <span class="na">name=</span><span class="s">&quot;AUTH_PASSWORD&quot;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;value</span> <span class="na">string=</span><span class="s">&quot;&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/item&gt;</span>
+    <span class="nt">&lt;item</span> <span class="na">name=</span><span class="s">&quot;LOGON_USER&quot;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;value</span> <span class="na">string=</span><span class="s">&quot;DOMAIN\johndoe&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/item&gt;</span>
+    <span class="nt">&lt;item</span> <span class="na">name=</span><span class="s">&quot;REMOTE_USER&quot;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;value</span> <span class="na">string=</span><span class="s">&quot;domain\johndoe&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/item&gt;</span>
+    <span class="nt">&lt;item</span> <span class="na">name=</span><span class="s">&quot;CONTENT_LENGTH&quot;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;value</span> <span class="na">string=</span><span class="s">&quot;0&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/item&gt;</span>
+    <span class="nt">&lt;item</span> <span class="na">name=</span><span class="s">&quot;CONTENT_TYPE&quot;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;value</span> <span class="na">string=</span><span class="s">&quot;&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/item&gt;</span>
+    <span class="c">&lt;!-- rest removed for brevity --&gt;</span>
+  <span class="nt">&lt;/serverVariables&gt;</span>
+<span class="nt">&lt;/error&gt;</span></code></pre></div>
+
+<p>Note that the <code>ToXml</code> and <code>FromXml</code> methods come from my own interface, namely <code>IXmlExportable</code>. The reason for doing this is threefold. First, <a href="http://msdn2.microsoft.com/en-us/library/system.xml.serialization.ixmlserializable.aspx"><code>IXmlSerializable</code></a> is officially un-documented in .NET Framework 1.x. It becomes documented with Whidbey so this argument does not hold so strong. Second, I didn’t want to implement <a href="http://msdn2.microsoft.com/en-us/library/system.xml.serialization.ixmlserializable.getschema.aspx"><code>GetSchema</code></a>. Third, I read and write the XML slightly differently. While <a href="http://msdn2.microsoft.com/en-us/library/system.xml.serialization.ixmlserializable.aspx"><code>IXmlSerializable</code></a> places an extra container element around the object’s XML, I didn’t want it because it felt unnecessary. In any case, <a href="http://msdn2.microsoft.com/en-us/library/system.xml.serialization.ixmlserializable.aspx"><code>IXmlSerializable</code></a> can always be implemented later in terms of <code>IXmlExportable</code> so this is not a big deal.</p>
+
+<p>Note that when an <code>Error</code> object is constructed from an <a href="http://msdn2.microsoft.com/en-us/library/system.exception.aspx"><code>Exception</code></a> instance, it also maintains a reference to it. This is done only for providing some fidelity at runtime. It has no consequence on logging or the XML serialization. Right now, the sample does not do any filtering based on exception types. However, if you ever wanted to add such a facility, then that’s where the <code>Exception</code> property would come in handy. For example, given an <code>Error</code> object, you could find out if it is of the class <a href="http://msdn2.microsoft.com/en-us/library/system.argumentexception.aspx"><code>ArgumentException</code></a> or not by inspecting its <code>Exception</code> property. You’ll notice that when the <code>Error</code> object is re-created from the log for displaying purposes, the <code>Exception</code> property is always null.</p>
+
+<h2 id="errorlog-and-errorlogentry">ErrorLog and ErrorLogEntry</h2>
+
+<p>The <code>ErrorLog</code> class is the abstract contract for a logging store. The log is responsible for recording instances of <code>Error</code> and allowing them to be read back. To create a concrete implementation, one has to provide only 3 methods: <code>Log</code>, <code>GetErrors</code> and <code>GetError</code>. The <code>Log</code> method takes an <code>Error</code> object and is supposed to serialize it, however it whishes, to its backing store. The <code>GetErrors</code> method retrieves logged errors in paged result-sets. That is, you specify the page index and the count of the errors to retrieve with each call. It is supposed to read the log and return errors in their most natural order, which is defined to be from latest to earliest. Put another way, sorted on time in descending order. <code>GetErrors</code> is only required to retrieve a digest version of the full error that is well-suited for quick on-screen and summary listing as shown in Figure 2. The digest (light-weight) properties are defined as <code>ApplicationName</code>, <code>HostName</code>, <code>Type</code>, <code>Source</code>, <code>Message</code>, <code>User</code>, <code>StatusCode</code> and <code>Time</code>. However, a caller should be prepared to handle empty values for these properties. Finally, the <code>GetError</code> method retrieves an error in its entirety given its ID. Both “get” methods actually return <code>ErrorLogEntry</code> instances rather than the <code>Error</code> object directly. The purpose of the <code>ErrorLogEntry</code> is to bind together the log-supplied data such as the ID with the actual <code>Error</code> object. Note that the <code>Id</code> property is typed as a string but the log can internally use an integer, GUID or what have you. The only requirement is that an <code>ErrorLog</code> implementation can round-trip its ID through a string.</p>
+
+<p>An <code>ErrorLog</code> implementation is expected to store and retrieve errors bound to an application name (see footnote 17) and accounts for the <code>ApplicationName</code> property on <code>Error</code>. The reasons for this will become clearer as we move along.</p>
+
+<h2 id="sqlerrorlog">SqlErrorLog</h2>
+
+<p><code>SqlErrorLog</code> is an implementation of <code>LogError</code> for Microsoft SQL Server 2000. The implementation is fairly straight forward since most of the code has to do with calling the stored procedures in the database. No direct table access is ever done. The database has a single table called <code>Error</code>:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Column</th>
+      <th>Type</th>
+      <th>Purpose</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>ErrorId</code></td>
+      <td><code>UNIQUEIDENTIFIER</code></td>
+      <td>The unique ID of the logged error</td>
+    </tr>
+    <tr>
+      <td><code>Application</code></td>
+      <td><code>NVARCHAR(60)</code></td>
+      <td>Stores the <code>ApplicationName</code> property of the <code>Error</code> object.</td>
+    </tr>
+    <tr>
+      <td><code>Host</code></td>
+      <td><code>NVARCHAR(50)</code></td>
+      <td>Stores the <code>HostName</code> property of the <code>Error</code> object.</td>
+    </tr>
+    <tr>
+      <td><code>Type</code></td>
+      <td><code>NVARCHAR(100)</code></td>
+      <td>Stores the <code>Type</code> property of the <code>Error</code> object.</td>
+    </tr>
+    <tr>
+      <td><code>Source</code></td>
+      <td><code>NVARCHAR(60)</code></td>
+      <td>Stores the <code>Source</code> property of the <code>Error</code> object.</td>
+    </tr>
+    <tr>
+      <td><code>Message</code></td>
+      <td><code>NVARCHAR(500)</code></td>
+      <td>Stores the <code>Message</code> property of the <code>Error</code> object.</td>
+    </tr>
+    <tr>
+      <td><code>User</code></td>
+      <td><code>NVARCHAR(50)</code></td>
+      <td>Stores the <code>User</code> property of the <code>Error</code> object.</td>
+    </tr>
+    <tr>
+      <td><code>StatusCode</code></td>
+      <td><code>INT</code></td>
+      <td>Stores the <code>StatusCode</code> property of the <code>Error</code> object.</td>
+    </tr>
+    <tr>
+      <td><code>TimeUtc</code></td>
+      <td><code>DATETIME</code></td>
+      <td>Stores the <code>Time</code> property of the <code>Error</code> object in UTC.</td>
+    </tr>
+    <tr>
+      <td><code>Sequence</code></td>
+      <td><code>INT</code></td>
+      <td>This is an identity column that is solely used for the purpose of recording the sequence in which the errors were inserted into the log. This helps for sorting.</td>
+    </tr>
+    <tr>
+      <td><code>AllXml</code></td>
+      <td><code>NTEXT</code></td>
+      <td>The entire serialized XML of the <code>Error</code> object, acquired by calling the <code>WriteXml</code> method.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Apart from <code>ErrorId</code> and Sequence, an <code>Error</code> object is split and stored in <code>AllXml</code> and the remaining columns. The <code>AlllXml</code> column contains the full XML of <code>Error</code> object as it is serialized by its <code>ToXml</code> method. Because the <code>Error</code> object contains complex and hierarchical state like collections of named values, it seemed simplest to just store it as one blob item of type <code>NTEXT</code>. But why have the other columns? Well, remember that the Log needs to return a digest version of the error when the <code>GetErrors</code> method is called. It would be too expensive to de-serialize the entire object from XML only to return a piece of it. Consequently, the lightweight properties are cached away in separate columns for quicker retrieval. What’s more, having properties like Type and User readily available allows you to quickly run statistics on the table. This is not done in the solution, but you could imagine where this would be useful in a reporting extension.</p>
+
+<p>The downside of this approach, of course, is that if you update values in the cached columns, then they’ll be out of sync with the corresponding values stored in the <code>AllXml</code> column (and vice versa). The differences will show up in the <code>Error</code> objects returned by the <code>GetErrors</code> and <code>GetError</code> method. Again, you are more than welcome to change the implementation details of <code>SqlErrorLog</code> to your liking. The rest of the solution will not be affected.</p>
+
+<p>There’s actually a much more subtle reason for having this kind of approach. Notice that the <code>Error</code> object is not sealed. Theoretically this means that it is extensible and you can go ahead and add your own properties to be stored in the log. However, for the log implementation to be oblivious to the final type it stores and serves, it simply records the XML of the object. The <code>FromXml</code> and <code>ToXml</code> methods on the <code>Error</code> class are extensible for precisely this reason. My implementation of <code>SqlErrorLog</code>, however, does not store the type of the <code>Error</code> object anywhere, so if you create your own <code>MyError</code> class, it does not know about it. It will be able to log it with all the state, but upon retrieval, you will always get back <code>Error</code> instances. One of my design goals was to keep type identity information out of the logs by as much as possible. Therefore <code>SqlErrorLog</code> offers a protected member called <code>NewError</code> that serves as an overridable factory. If you subclass <code>Error</code>, then you also have to provide a subclass for <code>SqlErrorLog</code> that can serve instances of your class.</p>
+
+<p>The <code>LogError</code> method of <code>SqlErrorLog</code> is the one that splits up the <code>Error</code> object’s properties into the cached set and the all encompassing XML column. The values are then passed as parameters to the <code>ELMAH_LogError</code> stored procedure that does the actual <code>INSERT</code>. There’s nothing else that is specially going on over here. It is worth noting that errors are never deleted in the default implementation. The exact policy of when and how to delete the errors can be enforced in the <code>ELMAH_LogError</code> stored procedure and right after the <code>INSERT</code> statement.</p>
+
+<p>The <code>GetError</code> method of <code>SqlErrorLog</code> calls the related <code>ELMAH_GetErrorXml</code> stored procedure to get a single error identified by a GUID (see footnote 18). The stored procedure does nothing more than return the value of <code>AllXml</code> column from the corresponding row. On the way back, <code>GetError</code> simply re-creates an <code>Error</code> object by sending the XML to its <code>FromXml</code> method.</p>
+
+<p>The <code>GetError</code> method of <code>SqlErrorLog</code> calls the related <code>ELMAH_GetErrorsXml</code> stored procedure, which returns a page of errors as XML. However, this time the XML only contains the digest properties mentioned earlier. <code>ExecuteXmlReader</code> is used to dig through the data and again <code>ReadXml</code> is used to populate <code>Error</code> objects that are eventually returned in a list. The use of XML in this case is just to have a lazy implementation that leverages the de-serialization infrastructure already present in the <code>Error</code> class. One could have easily used a data reader to read the data in a standard fashion and manually populate <code>Error</code> instances. Use of <code>ExecuteXmlReader</code> and the <code>FOR AUTO XML</code> in the stored procedure is really the reason for requiring SQL Server 2000, but this can be changed easily.</p>
+
+<h2 id="memoryerrorlog">MemoryErrorLog</h2>
+
+<p><code>MemoryErrorLog</code> is an implementation of <code>ErrorLog</code> that purely uses memory as its backing store. Needless to say, this log does not survive application restarts or failures, but it provides a very simple implementation that can come in handy in some hard cases where even <code>SqlErrorLog</code> would fail. For example, <code>SqlErrorLog</code> requires a complex store like a database and this assumes that an entire chain of infrastructure (network, server, database, etc.) will be fully operation in order to log exceptions in the first place. But say that even your error logging database becomes unavailable in the face of some catastrophic failure. This is where you could change your configuration file and temporarily switch to the <code>MemoryErrorLog</code> implementation to be able to diagnose problems albeit a volatile backing store.</p>
+
+<p>The implementation of the <code>MemoryErrorLog</code> is fairly straightforward. It uses a static instance of a nested collection implementation to store the error entries. The static instance is, of course, bound to the application domain so it will only store and serve errors private to the application. You can initialize the log with a size parameter that specifies the maximum number of entries it will log in its store. Once the log is filled up, the older entry is dropped to make place for a new one. The default size of the log is 15, with a maximum of 500. The default should be fine for most cases, but don’t make it too big since errors will accumulate and consume memory unnecessarily. Remember, the point of this log implementation is for troubleshooting or even otherwise testing purposes.</p>
+
+<p>There are only two items to mention with this implementation. First, it uses a <a href="http://msdn2.microsoft.com/en-us/library/system.threading.readerwriterlock.aspx"><code>ReaderWriterLock</code></a> instance to synchronize access to the log. A writer-lock is acquired during the Log method and reader-lock during the <code>GetError</code> and <code>GetErrors</code> methods. The lock itself is a static member of the <code>MemoryErrorLog</code> and is initialized together with the type. The entries collection is itself initialized when the first error is logged. Until then, it has minimum footprint.</p>
+
+<p>The second item to note is that the <code>MemoryErrorLog</code> makes defensive copies of the <code>Error</code> objects on the way in and out of its store (the internal collection). Since <code>Error</code> objects are mutable, the log clones an <code>Error</code> object in the Log method to maintain its own private copy and then returns yet another clone in <code>GetError</code> and <code>GetErrors</code> for the private use of the caller. I could have avoided all this extra copying by making the <code>Error</code> object immutable in the first place, but I decide to keep things short and simple for the article. From a more commercial-grade solution, it would be very favorable to support immutability on <code>Error</code> and its collections especially because it’s really not all that hard to do.</p>
+
+<h2 id="binding-to-the-log-implementation">Binding to the Log Implementation</h2>
+
+<p>So how does the <code>ErrorLogModule</code>, or anyone for that matter, know which concrete implementation of the log to use? The <code>ErrorLog</code> class has a Default property that provides, well, the default error log implementation configured for the application. The implementation of the Default property internally calls the <code>CreateFromConfigSection</code> method of the <code>SimpleServiceProviderFactory</code> to obtain the <code>ErrorLog</code> instance. The job of <code>SimpleServiceProviderFactory</code> is to create and configure a type from the configuration at a specified configuration section. <code>SimpleServiceProviderFactory</code> makes three basic assumptions to succeed (see footnote 19):</p>
+
+<ul>
+  <li>The configuration returned by <a href="http://msdn2.microsoft.com/en-us/library/system.configuration.configurationsettings.getconfig.aspx"><code>ConfigurationSettings.GetConfig</code></a> will be a dictionary, allowing you to use a number of the <a href="http://msdn2.microsoft.com/en-us/library/system.configuration.&quot;.aspx">configuration section handlers supplied with the base class library</a>.</li>
+  <li>The dictionary must have a <code>type</code> entry whose value supplies the <a href="http://msdn2.microsoft.com/en-us/library/system.type.assemblyqualifiedname.aspx">standard type-specification</a> of the object to instantiate.</li>
+  <li>The type has a constructor that takes an <a href="http://msdn2.microsoft.com/en-us/library/system.collections.idictionary.aspx"><code>IDictionary</code></a> as the parameter.</li>
+</ul>
+
+<p>The type is created using <a href="http://msdn2.microsoft.com/en-us/library/system.activator.createinstance.aspx"><code>Activator.CreateInstance</code></a> and via a constructor that is expected to take a single parameter typed as <a href="http://msdn2.microsoft.com/en-us/library/system.collections.idictionary.aspx"><code>IDictionary</code></a>. The dictionary can then be used by the type of initialize itself. For example, <code>SqlErrorLog</code> expects to find its connection string in there whereas the <code>MemoryErrorLog</code> looks for a <code>size</code> override.</p>
+
+<p>Note that <code>SimpleServiceProviderFactory</code> removes the <code>type</code> key from the dictionary before passing it on to the type its constructing. However, it cannot do this simply on the dictionary returned by <code>GetConfig</code> because this is cached away by the framework and we don’t want to be modifying that version (see footnote 20). So, instead, the dictionary is cloned and then the <code>type</code> key is removed. This defensive copy turns out to be good idea anyhow because the <code>SimpleServiceProviderFactory</code> cannot assume what the type is going to do with it anyhow.</p>
+
+<p>So getting back to where it all started, the Default property on <code>ErrorLog</code> grabs the implementation from the configuration and hangs on to it in a static member. This means that subsequent calls to return the default instance will be instantaneous. On item of interest to note here is the static member is bound to the thread and not the application domain. In other words, an independent error log instance is maintained per thread. This yields two major benefits without writing any code and yet at the expense of very little memory overhead. We don’t need to synchronize access to the static field and, even more importantly, the downstream error log implementation can be free of multi-threaded details. This is a lot like how ASP.NET also makes life easy for implementers of modules.</p>
+
+<h2 id="the-handlers-to-the-errorlog">The Handlers to the ErrorLog</h2>
+
+<p>There’s really nothing special going on in the handlers. Most of the code is basic practice for writing handlers and it’s just rendering a la <a href="http://msdn2.microsoft.com/en-us/library/system.web.ui.htmltextwriter.aspx"><code>HtmlTextWriter</code></a>. The only interesting point to mention is that, except for the RSS handler, all handlers are in fact <em>pages</em>. That is, they eventually inherit from the same Page class (via the <code>ErrorPageBase</code>) that you’re used to. This provides all the benefits of a regular Web Form (ASPX page) like view state, validators and web controls so you don’t necessarily have to resort to the <code>HtmlTextWriter</code>-style of rendering. The only thing you won’t get is the dynamic compilation and the convenience of an HTML designer. I haven’t employed any web controls in the solution because I didn’t need anything as rich as the <a href="http://msdn2.microsoft.com/en-us/library/system.web.ui.webcontrols.datagrid.aspx"><code>DataGrid</code></a> or <a href="http://msdn2.microsoft.com/en-us/library/system.web.ui.webcontrols.calendar.aspx"><code>Calendar</code></a>. However, inheriting from Page still makes some things just more accessible as you don’t have to pass around the <a href="http://msdn2.microsoft.com/en-us/library/system.web.httpcontext.aspx"><code>HttpContext</code></a> object supplied to <a href="http://msdn2.microsoft.com/en-us/library/system.web.ihttphandler.processrequest.aspx"><code>ProcessRequest</code></a>.</p>
+
+<p>The <code>ErrorPageBase</code> class serves as the base class for all the HTML content handlers. It basically provides some base convenience properties and a frame for the page layout as illustrated in Figure 14:</p>
+
+<p><img src="http://elmah.googlecode.com/svn/wiki/technote-fig-14.png" alt="http://elmah.googlecode.com/svn/wiki/technote-fig-14.png" /></p>
+
+<p>Note that style sheet for all pages comes from a CSS file that is as a resource in the assembly manifest.</p>
+
+<p>The <code>ErrorLogPageFactory</code> is just a plain <em>switch</em> factory that is responsible for cracking the URL and returning the corresponding handler class. The factory uses the <a href="http://msdn2.microsoft.com/en-us/library/system.web.httprequest.pathinfo.aspx"><code>PathInfo</code></a> (see footnote 21)  property of <code>HttpRequest</code> to determine which resource is being requested.</p>
+
+<p>Note how the style sheet for all pages is embedded as a resource and served using the <code>MainfestResourceHandler</code> class.</p>
+
+<p>A lot of handlers provide no form of customization. So what do you do if you don’t like how the pages are laid out? Perhaps you want to put in there some extra detail or make them more compatible for some browser. Write your own handler to view the <code>ErrorLog</code>. It’s so easy that creating fully extensible and configurable handlers, plus the design decisions that entail them, is simply not worth the effort.</p>
+
+<h2 id="errormailmodule">ErrorMailModule</h2>
+
+<p>The <code>ErrorMailModule</code> has a very simple implementation. During the Init method, it reads the configuration section to get some basic settings like the sender address, the recipient(s)  (see footnote 22), the subject line and whether to send the mail synchronously or asynchronously. Like <code>ErrorLogModule</code>, it subscribes to the <code>Error</code> event of the application.</p>
+
+<p>When an unhandled error propagates to the top, the <code>OnError</code> handler of the module gets called by ASP.NET. There an <code>Error</code> object is constructed from the Exception and then either <code>ReportErrorAsync</code> or <code>ReportError</code> is called depending on the async setting from the configuration. The idea of reporting the error asynchronously is simply to prevent an operational issue from delaying the response to the user unnecessarily (see footnote 23). Asynchronous reporting is achieved by <a href="http://msdn2.microsoft.com/en-us/library/system.threading.threadpool.queueuserworkitem.aspx">posting a worker item to the thread pool</a>. It may have been better not to borrow a thread from the same pool used by ASP.NET to server requests but this detail can be changed by a subclass easily (see footnote 24). For the article, it illustrates the point adequately.</p>
+
+<p>The workhorse of the implementation is in the <code>ReportError</code> method. This is where basically an e-mail is created, formatted and dispatched. A <code>MailMessage</code> object is created to specify the sender, recipients, format and body of the e-mail. The module is designed to focus on its job of preparing and sending a message, but the details how the body of the message is formatted with details from the <code>Error</code> object are isolated into a separate type, the <code>ErrorTextFormatter</code>.</p>
+
+<p>The <code>ErrorTextFormatter</code> is actually an abstract base class that defines the contract that the error formatters must implement. It has a single property and method, namely <code>MimeType</code> and Format. The <code>MimeType</code> property of a mail formatter is used to set the <code>MailFormat</code> property of the <code>MailMessage</code>. <code>ErrorMailModule</code> only understands text/plain and text/html, both of which directly translate to MailFormat.Text and MailFormat.Html. The Format method is where the actual writing of the mail body takes place. It receives a <code>TextWriter</code> and an <code>Error</code> object as parameters. How the formatter then writes out the body is completely oblivious to the <code>ErrorMailModule</code>. To obtain the concrete error formatter implementation, the <code>ErrorMailModule</code> calls a protected virtual method named <code>CreateErrorFormatter</code>. In the supplied solution, there’s only the <code>ErrorMailHtmlFormatter</code> implementation provided and which is returned from this method. It is the one responsible for the formatting the HTML mail as shown in Figure 1.</p>
+
+<p>Just before sending out the mail, the <code>ErrorMailModule</code> calls <code>PreSendMail</code> to give subclasses a last crack at the mail to be sent and the error object (see footnote 25). The default implementation checks if the <code>Error</code> object’s <code>WebHostHtmlMessage</code> has a value or not. If it does, it creates an attachment and blasts the HTML contents into it. Finally, the <code>SendMail</code> method gets called and whose implementation forwards the call to <code>SmtpMail</code>.Send from the base class library.</p>
+
+<p>The main thing to note about the implementation of the <code>ErrorMailModule</code> class is that it uses approach of the <a href="http://www.dofactory.com/Patterns/PatternTemplate.aspx">Template Method design pattern</a>. Rather than adding lots of configuration options, I’ve provided the workhorse of the implementation. For all customization, you can override various protected virtual members to change things that you don’t like. Here’s a summary:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Method</th>
+      <th>Why Override?</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Init</code></td>
+      <td>Override this method to principally change how the class is initialized.</td>
+    </tr>
+    <tr>
+      <td><code>MailSender</code></td>
+      <td>If you override the <code>Init</code> method completely (see footnote 26) then this property still allows the remaining of the class to get access to the sender address.</td>
+    </tr>
+    <tr>
+      <td><code>MailRecipient</code></td>
+      <td>If you override the <code>Init</code> method completely then this property still allows the remaining of the class to get access to the recipient address(es).</td>
+    </tr>
+    <tr>
+      <td><code>MailSubjectFormat</code></td>
+      <td>If you override the <code>Init</code> method completely then this property still allows the remaining of the class to get access to the subject format.</td>
+    </tr>
+    <tr>
+      <td><code>OnError</code></td>
+      <td>Override this method to principally change how the <code>Error</code> object is obtained or how <code>ReportError</code> is invoked. This could also be a good place to add filtering based on the type of exception, like don’t report <code>HttpCompileException</code> type of exceptions.</td>
+    </tr>
+    <tr>
+      <td><code>ReportErrorAsync</code></td>
+      <td>Override this method to principally change how <code>ReportError</code> is called asynchronously. Default implementation uses a worker from the system-supplied thread pool.</td>
+    </tr>
+    <tr>
+      <td><code>ReportError</code></td>
+      <td>Override this method to principally change the implementation of how an error is reported.</td>
+    </tr>
+    <tr>
+      <td><code>PreSendMail</code></td>
+      <td>Override this method if all you want to do is get a last crack at the mail message and error object before the e-mail is dispatched.</td>
+    </tr>
+    <tr>
+      <td><code>DisposeMail</code></td>
+      <td>Override this method to do any clean-up associated with the mail. The default implementation deletes attached files, assuming that they were created only for the temporary purpose of sending the mail.</td>
+    </tr>
+    <tr>
+      <td><code>CreateErrorFormatter</code></td>
+      <td>Override this method to principally return your own implementation of the <code>ErrorTextFormatter</code>.</td>
+    </tr>
+    <tr>
+      <td><code>SendMail</code></td>
+      <td>Override this method to principally change how the mail is really sent. If you want to use your own SMTP mailing library, for example, then this would be the right point to do the conversion.</td>
+    </tr>
+    <tr>
+      <td><code>GetConfig</code></td>
+      <td>Override this method to principally change how the configuration is obtained. For example, you could change the name of the configuration section used over here.</td>
+    </tr>
+    <tr>
+      <td><code>GetLastError</code></td>
+      <td>Override this method to principally change how the Exception is obtained and converted to an <code>Error</code> object.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h1 id="footnotes">Footnotes</h1>
+
+<ol>
+  <li>The reason for requiring Microsoft SQL Server 2000 is because I rely on some of the XML features as a shortcut, but nothing stops from back-porting the implementation to work with Microsoft SQL Server version 7.0. You may also be able to use MSDE 2000, but the solution hasn’t been tested against it.</li>
+  <li>Of course, you can configure any path you like and it will serve as the root of all handlers in the solution.</li>
+  <li>The error log root page is considered the path configured in the entry added to <code>&lt;httpHandlers&gt;</code>.</li>
+  <li>If you’ve been following the tutorial strictly then you can just press the Back button twice in the browser. You may also have to click Refresh button to get the latest updates.</li>
+  <li>This can be a little deceiving sometimes. You might think that clicking the link has generated an exception in the application, but that’s not the case here. It’s really the entire HTML document that was generated by ASP.NET for the exception. It may have been better to use frames to put a small reminder at the top, but the idea was dropped to keep the code size down for the article.</li>
+  <li>This is implemented using a hidden gem in the .NET Framework. See the <a href="http://msdn2.microsoft.com/en-us/library/system.web.httpexception.gethtmlmessage.aspx"><code>GetHtmlMessage</code></a> method of the <a href="http://msdn2.microsoft.com/en-us/library/system.web.httpexception.aspx"><code>HttpException</code></a> class. So why did this link not show up the first time? Unfortunately, ASP.NET does not always provide the contents of the error message HTML. It depends on when the exception occurs in the execution of the HTTP pipeline.</li>
+  <li>This is the default when no log is configured. The current log implementation in effect is displayed in the footer of the error log pages.</li>
+  <li>Assuming that you chose that proposed installation location during the setup of ELMAH, the script can be found using the path <code>%ProgramFiles%\GotDotNet\ELMAH\1.0\src\Database.sql</code> on the selected drive. The SQL script does not create the database in case you want to integrate it into an existing database.</li>
+  <li>You can specify more than one recipient by delimiting addresses with semi-colon (;).</li>
+  <li>The solution assembly is strong-named so it can be added to the GAC.</li>
+  <li>ELMAH automatically isolates logs of each application. It is not possible for one application to view the log of another.</li>
+  <li>There are many places where changing the behavior of ELMAH does not require you to change the base source code. A lot of the classes are designed for inheritance (see those that are unsealed and bear virtual members). So it’s better to inherit, override functionality and configure your class to run instead of changing the base source.</li>
+  <li>Informally and often known as a <em>data-centric</em> class.</li>
+  <li>Originally, I had the idea of distinguishing basic errors from web-based errors. For example, the web collections would go into a separate class called <code>WebError</code> that had <code>Error</code> as its base class. However, I rolled this into one class for the sake of simplicity and to reduce the number of classes in the sample. Again, ELMAH is not an academic exercise into abstracting the notion of errors.</li>
+  <li>The <a href="http://msdn2.microsoft.com/en-us/library/system.web.httpresponse.statuscode.aspx"><code>StatusCode</code></a> property on the <a href="http://msdn2.microsoft.com/en-us/library/system.web.httpresponse.aspx"><code>Response</code></a> object is unreliable and unfortunately the exact status code that is returned to the client can never be fully determined.</li>
+  <li>Values that were simply too long to display have been replace with ellipsis.</li>
+  <li>Note that there is no method for retrieving the application names registered in a log. This is somewhat intentional for basic security reasons. Imagine a hosting provider who offers the error log facility to all the web applications. If there were a method like <code>GetApplications</code> on <code>ErrorLog</code>, then anyone could call <code>ErrorLog.Default.GetApplications</code> and discover information private to others. This does not only apply to a hosting provider scenario. You can extend the same issue to an enterprise operations environment where web servers host more than one departmental business application. I imagine that this sort of issue can be solved with Code Access Security, but again, that’s been omitted for sake brevity and keeping the solution focused.</li>
+  <li>The reason for choosing a GUID is rather important. If you want to ship error logs from several machines to a single server then using a GUID as the primary key and identification of an error provides the most conflict-free solution. Also, each error gets its own unique ID <em>forever</em>.</li>
+  <li>These assumptions were one of those design decisions that were made to reduce the number of classes and abstractions needed in the solution. Some people may not agree with them, but they amply serve the purpose for the sample.</li>
+  <li>Ideally, the objects returned from <a href="http://msdn2.microsoft.com/en-us/library/system.configuration.configurationsettings.getconfig.aspx"><code>ConfigurationSettings.GetConfig</code></a> would be read-only. Alas, this is not the case with the dictionaries returned by factory implementations such as <a href="http://msdn2.microsoft.com/en-us/library/system.configuration.singletagsectionhandler.aspx"><code>SingleTagSectionHandler</code></a>.</li>
+  <li>I used the <a href="http://msdn2.microsoft.com/en-us/library/system.web.httprequest.pathinfo.aspx"><code>PathInfo</code></a> because it really keeps it leave query string clean for use by the downstream handler.</li>
+  <li>This can be a semicolon-delimited list of e-mail addresses to reach several recipients.</li>
+  <li>The same idea could have been used for the logging subsystem but I decided to demonstrate the idea in this module instead since it is less overloaded with implementation details.</li>
+  <li>It’s actually more important to check whether asynchronous reporting in the case of mailing buys you a lot before committing to a complicated implementation.</li>
+  <li>This is a little bit like how <code>PreRender</code> event is raised before the rendering phase begins for ASP.NET controls and pages.</li>
+  <li>That is, without calling the base class implementation. The <code>ErrorMailModule</code> itself never relies on its private fields, but rather uses protected virtual properties that can be overridden. The only exception is the <code>_reportAsynchronously</code> field. This one has no corresponding property because that behavior can be overridden via <code>OnError</code> or <code>ReportErrorAsync</code>. For example, if you want to completely disable the feature, then just override <code>ReportErrorAsyc</code> to call <code>ReportError</code>.</li>
+</ol>
+
+      </article>
+    </div>
+
+    <div class="clear"></div>
+
+  </div>
+</section>
+
+
+  <footer role="contentinfo">
+  <div class="grid">
+    <div class="unit one-third center-on-mobiles">
+      <p>&copy;&nbsp;2004 <a href="http://www.raboof.com/">Atif Aziz</a> under the terms of the <a href="http://www.apache.org/licenses/LICENSE-2.0" title="Apache License, Version 2.0">ALv2</a>.
+         Portions &copy;&nbsp;2008 <a href="http://tom.preston-werner.com/">Tom Preston-Werner</a> under <a href="https://github.com/jekyll/jekyll/blob/master/LICENSE">MIT&nbsp;License</a>.</p>
+    </div>
+    <div class="unit two-thirds align-right center-on-mobiles">
+      <p>Published: 2015-06-19 19:20 CEST</p>
+    </div>
+  </div>
+</footer>
+
+  <script>
+  var anchorForId = function (id) {
+    var anchor = document.createElement("a");
+    anchor.className = "header-link";
+    anchor.href      = "#" + id;
+    anchor.innerHTML = "<span class=\"sr-only\">Permalink</span><i class=\"fa fa-link\"></i>";
+    anchor.title = "Permalink";
+    return anchor;
+  };
+
+  var linkifyAnchors = function (level, containingElement) {
+    var headers = containingElement.getElementsByTagName("h" + level);
+    for (var h = 0; h < headers.length; h++) {
+      var header = headers[h];
+
+      if (typeof header.id !== "undefined" && header.id !== "") {
+        header.appendChild(anchorForId(header.id));
+      }
+    }
+  };
+
+  document.onreadystatechange = function () {
+    if (this.readyState === "complete") {
+      var contentBlock = document.getElementsByClassName("docs")[0]
+                      || document.getElementsByClassName("news")[0]
+                      || document.getElementsByClassName("standalone")[0];
+      if (!contentBlock) {
+        return;
+      }
+      for (var level = 1; level <= 6; level++) {
+        linkifyAnchors(level, contentBlock);
+      }
+    }
+  };
+</script>
+
+  
+
+</body>
+</html>
