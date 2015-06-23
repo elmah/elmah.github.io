@@ -2,7 +2,7 @@
 <html lang="en-US">
 <head>
   <meta charset="UTF-8">
-  <title>ELMAH&mdash;Articles</title>
+  <title>ELMAH&mdash;Using ELMAH with SQL Server Compact 4.0</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="generator" content="Jekyll v2.5.3">
   <link rel="alternate" type="application/atom+xml" title="Recent commits to master branch" href="https://github.com/elmah/www/commits/master.atom">
@@ -70,37 +70,18 @@
     <div class="unit whole">
       <article>
         <div class="improve right hide-on-mobiles">
-          <a href="https://github.com/elmah/www/edit/master/Articles.md"><i class="fa fa-pencil"></i> &nbsp;Improve this page</a>
+          <a href="https://github.com/elmah/www/edit/master/SqlServerCompact.md"><i class="fa fa-pencil"></i> &nbsp;Improve this page</a>
         </div>
-        <h1>Articles</h1>
-        
-<ul>
-  <li>
-    <p><a href="/a/error-filtering/">Error Filtering</a></p>
-  </li>
-  <li>
-    <p><a href="/a/error-filtering/examples/">Error Filtering Examples</a></p>
-  </li>
-  <li>
-    <p><a href="/a/error-log-download-applications/">Error Log Download Applications</a></p>
-  </li>
-  <li>
-    <p><a href="/a/prowling-errors/">Prowling Errors</a></p>
-  </li>
-  <li>
-    <p><a href="/a/securing-error-log-pages/">Securing Error Log Pages</a></p>
-  </li>
-  <li>
-    <p><a href="/a/sql-server-compact/">Using ELMAH with SQL Server Compact 4.0</a></p>
-  </li>
-</ul>
+        <h1>Using ELMAH with SQL Server Compact 4.0</h1>
+        <p>ELMAH, from version 1.2 and onwards, supports the logging of errors to a <a href="http://www.microsoft.com/en-us/download/details.aspx?id=17876">SQL Server Compact 4.0</a> database file using the <code>SqlServerCompactErrorLog</code>, but only against .NET Framework version 3.5 SP1 or a later release. It provides this support using the <a href="http://msdn.microsoft.com/en-us/library/system.data.sqlserverce.aspx">SQL Server Compact ADO.NET Provider</a>. The provider supports medium trust environments under ASP.NET 4.0 but requires full trust on earlier versions.</p>
 
-<p>The following have been deprecated or contain very date information:</p>
+<h2 id="configuring-elmah">Configuring ELMAH</h2>
 
-<ul>
-  <li><a href="/a/technical-notes/">Technical Notes</a></li>
-</ul>
+<p>If you look in the <a href="http://elmah.googlecode.com/svn/tags/REL-1.2-SP1/samples/web.config">sample web.config</a> file, you will find commented examples of how to configure ELMAH with each available implementation, including SQL Server Compact 4.0. The main thing to consider is where you want your database to reside. The <a href="http://elmah.googlecode.com/svn/tags/REL-1.2-SP1/samples/web.config">sample web.config</a> file suggests a database called <code>elmah.sdf</code> located in the <code>App_Data</code> folder of your website.</p>
 
+<h2 id="private-deployment-of-sql-server-compact-40-binaries">Private Deployment of SQL Server Compact 4.0 Binaries</h2>
+
+<p>SQL Server Compact 4.0 supports private deployment of x86 and x64 binaries within the same folder structure. See the “<a href="http://erikej.blogspot.com/2010/11/sql-server-compact-private-deployment.html">SQL Server Compact ‘Private Deployment’ on desktop–an overview</a>” blog post for details and links to further information.</p>
 
       </article>
     </div>
