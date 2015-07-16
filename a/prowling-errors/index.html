@@ -82,13 +82,13 @@
 <p>In its default state, the module is configured as if you had the following under <code>elmah</code> section group in your <code>web.config</code>:</p>
 
 <div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;errorTweet</span>
-<span class="na">userName=</span><span class="s">&quot;&quot;</span>
-<span class="na">password=</span><span class="s">&quot;&quot;</span>
-<span class="na">statusFormat=</span><span class="s">&quot;{Message}&quot;</span>
-<span class="na">maxStatusLength=</span><span class="s">&quot;140&quot;</span>
-<span class="na">ellipsis=</span><span class="s">&quot;...&quot;</span>
-<span class="na">url=</span><span class="s">&quot;http://twitter.com/statuses/update.xml&quot;</span>
-<span class="na">formFormat=</span><span class="s">&quot;status={0}&quot;</span> <span class="nt">/&gt;</span></code></pre></div>
+    <span class="na">userName=</span><span class="s">&quot;&quot;</span>
+    <span class="na">password=</span><span class="s">&quot;&quot;</span>
+    <span class="na">statusFormat=</span><span class="s">&quot;{Message}&quot;</span>
+    <span class="na">maxStatusLength=</span><span class="s">&quot;140&quot;</span>
+    <span class="na">ellipsis=</span><span class="s">&quot;...&quot;</span>
+    <span class="na">url=</span><span class="s">&quot;http://twitter.com/statuses/update.xml&quot;</span>
+    <span class="na">formFormat=</span><span class="s">&quot;status={0}&quot;</span> <span class="nt">/&gt;</span></code></pre></div>
 
 <p>Following is a breif explanation of the attributes:</p>
 
@@ -144,29 +144,27 @@
 <p>Next, <a href="https://www.prowlapp.com/register.php">register with prowlapp.com</a> and once your account has been created and registration is complete, open the <code>web.config</code> of a web application already using ELMAH. Define the following section under the <code>&lt;sectionGroup&gt;</code> element for <code>elmah</code>:</p>
 
 <div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;section</span>
-<span class="na">name=</span><span class="s">&quot;errorTweet&quot;</span> <span class="na">requirePermission=</span><span class="s">&quot;false&quot;</span>
-<span class="na">type=</span><span class="s">&quot;Elmah.ErrorTweetSectionHandler, Elmah&quot;</span> <span class="nt">/&gt;</span></code></pre></div>
+    <span class="na">name=</span><span class="s">&quot;errorTweet&quot;</span> <span class="na">requirePermission=</span><span class="s">&quot;false&quot;</span>
+    <span class="na">type=</span><span class="s">&quot;Elmah.ErrorTweetSectionHandler, Elmah&quot;</span> <span class="nt">/&gt;</span></code></pre></div>
 
 <p>Next, add the following section under the <code>&lt;elmah&gt;</code> section group:</p>
 
 <div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;errorTweet</span>
-<span class="na">formFormat=</span><span class="s">&quot;apikey=APIKEY&amp;amp;application=ELMAH&amp;amp;event=Error%20%40%20example.com&amp;amp;priority=high&amp;amp;description={0}&quot;</span>
-<span class="na">url=</span><span class="s">&quot;https://api.prowlapp.com/publicapi/add&quot;</span> <span class="nt">/&gt;</span></code></pre></div>
+    <span class="na">formFormat=</span><span class="s">&quot;apikey=APIKEY&amp;amp;application=ELMAH&amp;amp;event=Error%20%40%20example.com&amp;amp;priority=high&amp;amp;description={0}&quot;</span>
+    <span class="na">url=</span><span class="s">&quot;https://api.prowlapp.com/publicapi/add&quot;</span> <span class="nt">/&gt;</span></code></pre></div>
 
 <p>Replace <code>APIKEY</code> in caps above with <a href="https://www.prowlapp.com/api_settings.php">your Prowl API key</a>. You may also want to replace <code>example.com</code> or other parts of the <code>formFormat</code> attribute to more meaningful values. See the <a href="http://www.prowlapp.com/api.php#add">Prowl third-party API</a> for more details and the meaning of the various form fields.</p>
 
 <p>You will then need to register the HTTP module by adding the following element in the <code>&lt;httpModules&gt;</code> section:</p>
 
-<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;add</span>
-<span class="na">name=</span><span class="s">&quot;ErrorTweet&quot;</span>
-<span class="na">type=</span><span class="s">&quot;Elmah.ErrorTweetModule, Elmah&quot;</span> <span class="nt">/&gt;</span></code></pre></div>
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ErrorTweet&quot;</span>
+     <span class="na">type=</span><span class="s">&quot;Elmah.ErrorTweetModule, Elmah&quot;</span> <span class="nt">/&gt;</span></code></pre></div>
 
 <p>If you are using IIS 7 or later then you will need the following entry in the <code>&lt;modules&gt;</code> section:</p>
 
-<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;add</span>
-<span class="na">name=</span><span class="s">&quot;ErrorTweet&quot;</span>
-<span class="na">type=</span><span class="s">&quot;Elmah.ErrorTweetModule, Elmah&quot;</span>
-<span class="na">preCondition=</span><span class="s">&quot;managedHandler&quot;</span> <span class="nt">/&gt;</span></code></pre></div>
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ErrorTweet&quot;</span>
+     <span class="na">type=</span><span class="s">&quot;Elmah.ErrorTweetModule, Elmah&quot;</span>
+     <span class="na">preCondition=</span><span class="s">&quot;managedHandler&quot;</span> <span class="nt">/&gt;</span></code></pre></div>
 
 <p>That’s it! Next time you get an error, you should see a notification appear on your device, similar to screen captures below!</p>
 
@@ -193,7 +191,7 @@
          Portions &copy;&nbsp;2008 <a href="http://tom.preston-werner.com/">Tom Preston-Werner</a> under <a href="https://github.com/jekyll/jekyll/blob/master/LICENSE">MIT&nbsp;License</a>.</p>
     </div>
     <div class="unit two-thirds align-right center-on-mobiles">
-      <p>Published: 2015-07-08 19:45 CEST</p>
+      <p>Published: 2015-07-16 08:49 CEST</p>
     </div>
   </div>
 </footer>
