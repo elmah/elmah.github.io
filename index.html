@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>ELMAH&mdash;Home</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="generator" content="Jekyll v2.5.3">
+  <meta name="generator" content="Jekyll v3.0.2">
   <link rel="alternate" type="application/atom+xml" title="Recent commits to master branch" href="https://github.com/elmah/www/commits/master.atom">
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic,900">
   <link rel="stylesheet" href="/css/screen.css">
@@ -87,13 +87,13 @@
 </ul>
 
 <div class="note">
-  <h5>ELMAH 1.2 Service Pack (SP) 2 <a href="https://code.google.com/p/elmah/wiki/Downloads?tm=2">now available</a></h5>
+  <h5>ELMAH 1.2 Service Pack (SP) 2 <a href="https://bitbucket.org/project-elmah/main/wiki/Downloads">now available</a></h5>
   <p>See also:</p>
   
   <ul>
-    <li><a href="http://code.google.com/p/elmah/issues/list?q=label%3AMilestone-Release1.2&amp;can=1">What&rsquo;s new and fixed in 1.2</a></li>
-    <li><a href="http://code.google.com/p/elmah/issues/list?q=label%3AMilestone-Release1.2SP1&amp;can=1">What&rsquo;s fixed in 1.2 SP1</a></li>
-    <li><a href="http://code.google.com/p/elmah/issues/list?q=label%3AMilestone-Release1.2SP2&amp;can=1">What&rsquo;s fixed in 1.2 SP2</a></li>
+    <li><a href="https://github.com/elmah/Elmah/issues?q=is%3Aissue+label%3AMilestone-Release1.2+is%3Aclosed">What&rsquo;s new and fixed in 1.2</a></li>
+    <li><a href="https://github.com/elmah/Elmah/issues?q=is%3Aissue+label%3AMilestone-Release1.2SP1+is%3Aclosed">What&rsquo;s fixed in 1.2 SP1</a></li>
+    <li><a href="https://github.com/elmah/Elmah/issues?q=is%3Aissue+label%3AMilestone-Release1.2SP2+is%3Aclosed">What&rsquo;s fixed in 1.2 SP2</a></li>
   </ul>
 </div>
 
@@ -103,10 +103,10 @@
   <li>Log errors to several back-end storages:
     <ul>
       <li><a href="http://www.microsoft.com/sql/">Microsoft SQL Server</a></li>
-      <li><a href="http://www.oracle.com/">Oracle</a> (<a href="http://elmah.googlecode.com/svn/tags/REL-1.2/src/Elmah/OracleErrorLog.cs">OracleErrorLog</a>)</li>
+      <li><a href="http://www.oracle.com/">Oracle</a> (<a href="https://www.assembla.com/spaces/elmah/subversion/source/HEAD/tags/REL-1.2/src/Elmah/OracleErrorLog.cs"><code>OracleErrorLog</code></a>)</li>
       <li><a href="http://www.sqlite.org/">SQLite</a> (version 3) database file</li>
-      <li>[Access Microsoft Access] (<a href="http://elmah.googlecode.com/svn/tags/REL-1.2/src/Elmah/AccessErrorLog.cs">AccessErrorLog</a>)</li>
-      <li><del><a href="http://www.vistadb.net/">VistaDB</a> (<a href="http://elmah.googlecode.com/svn/tags/REL-1.1/src/Elmah/VistaDBErrorLog.cs">VistaDBErrorLog</a>)</del>; deprecated in release 1.2</li>
+      <li><a href="https://code.google.com/p/elmah/wiki/Access">Microsoft Access</a> (<a href="https://www.assembla.com/spaces/elmah/subversion/source/HEAD/tags/REL-1.2/src/Elmah/AccessErrorLog.cs"><code>AccessErrorLog</code></a>)</li>
+      <li><del><a href="http://www.vistadb.net/">VistaDB</a> (<a href="https://www.assembla.com/spaces/elmah/subversion/source/HEAD/tags/REL-1.1/src/Elmah/VistaDBErrorLog.cs">VistaDBErrorLog</a>)</del>; deprecated in release 1.2</li>
       <li>Loose XML files</li>
       <li>RAM (in-memory)</li>
       <li><a href="http://www.microsoft.com/sql/">SQL Server Compact Edition</a></li>
@@ -116,23 +116,23 @@
   </li>
   <li>Supports ASP.NET 1.x, 2.0 and later versions.</li>
   <li>Supports medium trust under ASP.NET 2.0 and later versions.</li>
-  <li><a href="http://code.google.com/p/elmah/wiki/ErrorFiltering">Filter unwanted exceptions</a>, programmatically and via configuration.</li>
+  <li><a href="/a/error-filtering/">Filter unwanted exceptions</a>, programmatically and via configuration.</li>
   <li>Get a digest RSS feed that lists errors by day and up to last 15 days.</li>
   <li>Programmatically and explicitly signal exceptions that, although handled in some way, should still be logged.</li>
   <li>Download the whole error log into a single CSV file for analysis, filtering and charting using <a href="http://www.microsoft.com/excel/">Microsoft Excel</a> or <a href="http://www.microsoft.com/technet/scriptcenter/tools/logparser/default.mspx">Microsoft Log Parser</a>.</li>
-  <li>Send error notifications/tweets to your <a href="http://code.google.com/p/elmah/wiki/ProwlingErrors">iPhone, iPad or a custom application</a>.</li>
+  <li>Send error notifications/tweets to your <a href="/a/prowling-errors/">iPhone, iPad or a custom application</a>.</li>
   <li>Access the raw XML behind any logged error from its details page, making it easier to get to information (like form data, including <a href="http://msdn2.microsoft.com/en-us/library/ms972976.aspx">View State</a>) that, until now, had to be grabbed directly out of the error log’s backing store.</li>
   <li>Supports ASP.NET web application root operator (<code>~</code>) in paths for file-based error log implementations.</li>
   <li>Check if any ELMAH installation is up to date through its <em>about page</em>.</li>
-  <li>Run a self-contained demo Web site showing error logging and mailing in action right out of the box. Run <a href="http://elmah.googlecode.com/svn/tags/REL-1.2/demo.cmd">demo.cmd</a> in the root of the distribution.</li>
-  <li>Use <code>MsAjaxDeltaErrorLogModule</code> to log errors during partial updates enabled by <a href="http://msdn.microsoft.com/en-us/library/system.web.ui.updatepanel.aspx">UpdatePanel</a> in Microsoft ASP.NET AJAX</li>
-  <li>Use <a href="http://elmah.googlecode.com/svn/tags/REL-1.2/src/Elmah/ErrorLogDataSourceAdapter.cs">ErrorLogDataSourceAdapter</a> together with <a href="http://msdn.microsoft.com/en-us/library/system.web.ui.webcontrols.objectdatasource.aspx">ObjectDataSource</a> from ASP.NET to create your own custom views of the error log, almost purely in server-side markup and without a line of code!</li>
+  <li>Run a self-contained demo Web site showing error logging and mailing in action right out of the box. Run <a href="https://www.assembla.com/spaces/elmah/subversion/source/HEAD/tags/REL-1.2/demo.cmd"><code>demo.cmd</code></a> in the root of the distribution.</li>
+  <li>Use <code>MsAjaxDeltaErrorLogModule</code> to log errors during partial updates enabled by <a href="http://msdn.microsoft.com/en-us/library/system.web.ui.updatepanel.aspx"><code>UpdatePanel</code></a> in Microsoft ASP.NET AJAX</li>
+  <li>Use <a href="https://www.assembla.com/spaces/elmah/subversion/source/HEAD/tags/REL-1.2/src/Elmah/ErrorLogDataSourceAdapter.cs"><code>ErrorLogDataSourceAdapter</code></a> together with <a href="http://msdn.microsoft.com/en-us/library/system.web.ui.webcontrols.objectdatasource.aspx"><code>ObjectDataSource</code></a> from ASP.NET to create your own custom views of the error log, almost purely in server-side markup and without a line of code!</li>
   <li>Get error data in <a href="http://www.json.org/">JSON</a> (in addition to XML) from the detail page of an error.</li>
   <li>Supports the <a href="http://blogs.msdn.com/smartclientdata/archive/2005/08/26/456886.aspx"><code>|DataDirectory|</code> macro</a> to avoid absolute paths in connection strings.</li>
-  <li>Use JavaScript to express complex conditions for <a href="http://code.google.com/p/elmah/wiki/ErrorFiltering">filtering exceptions</a> in a more concise and familiar manner. See <a href="http://elmah.googlecode.com/svn/tags/REL-1.2/samples/web.config">sample web.config</a> for examples.</li>
+  <li>Use JavaScript to express complex conditions for <a href="/a/error-filtering/">filtering exceptions</a> in a more concise and familiar manner. See <a href="https://www.assembla.com/spaces/elmah/subversion/source/HEAD/tags/REL-1.2/samples/web.config">sample <code>web.config</code></a> for examples.</li>
   <li>Compiled for .NET 1.x and 2.0; run on .NET 1.x, 2.0. 3.x and 4.0.</li>
   <li>Sources include solution files for Visual Studio 2002, 2003 and 2010.</li>
-  <li>And, of course, <a href="http://code.google.com/p/elmah/issues/list?can=1&amp;q=status%3AFixed">lots of fixes</a> from field testing. Yep, that’s a feature too! :)</li>
+  <li>And, of course, <a href="https://github.com/elmah/Elmah/issues?q=is%3Aissue+is%3Aclosed">lots of fixes</a> from field testing. Yep, that’s a feature too! <img class="emoji" title=":smile:" alt=":smile:" src="https://assets.github.com/images/icons/emoji/unicode/1f604.png" height="20" width="20" align="absmiddle" /></li>
 </ul>
 
 <h2 id="elmah-in-action">ELMAH in Action</h2>
@@ -159,7 +159,7 @@
          Portions &copy;&nbsp;2008 <a href="http://tom.preston-werner.com/">Tom Preston-Werner</a> under <a href="https://github.com/jekyll/jekyll/blob/master/LICENSE">MIT&nbsp;License</a>.</p>
     </div>
     <div class="unit two-thirds align-right center-on-mobiles">
-      <p>Published: 2016-01-21 22:27 CET</p>
+      <p>Published: 2016-01-21 23:51 CET</p>
     </div>
   </div>
 </footer>

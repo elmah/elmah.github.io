@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>ELMAH&mdash;Error Filtering Examples</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="generator" content="Jekyll v2.5.3">
+  <meta name="generator" content="Jekyll v3.0.2">
   <link rel="alternate" type="application/atom+xml" title="Recent commits to master branch" href="https://github.com/elmah/www/commits/master.atom">
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic,900">
   <link rel="stylesheet" href="/css/screen.css">
@@ -81,7 +81,7 @@
 
 <p>Filter requests for <a href="http://en.wikipedia.org/wiki/Favicon">favicon.ico</a> that end in a <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 status code</a>:</p>
 
-<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;errorFilter&gt;</span>
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;errorFilter&gt;</span>
     <span class="nt">&lt;test&gt;</span>
         <span class="nt">&lt;and&gt;</span>
             <span class="nt">&lt;equal</span> <span class="na">binding=</span><span class="s">&quot;HttpStatusCode&quot;</span> 
@@ -90,13 +90,13 @@
                    <span class="na">pattern=</span><span class="s">&quot;/favicon\.ico(\z|\?)&quot;</span> <span class="nt">/&gt;</span>
         <span class="nt">&lt;/and&gt;</span>
     <span class="nt">&lt;/test&gt;</span>
-<span class="nt">&lt;/errorFilter&gt;</span></code></pre></div>
+<span class="nt">&lt;/errorFilter&gt;</span></code></pre></figure>
 
 <hr />
 
 <p>Filter requests ending in <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404</a> or those (using a <code>jscript</code> assertion) where where the last raised VB error was a negative number:</p>
 
-<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;errorFilter&gt;</span> 
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;errorFilter&gt;</span> 
   <span class="nt">&lt;test&gt;</span> 
     <span class="nt">&lt;or&gt;</span> 
       <span class="nt">&lt;equal</span> <span class="na">binding=</span><span class="s">&quot;HttpStatusCode&quot;</span> <span class="na">value=</span><span class="s">&quot;404&quot;</span> <span class="na">type=</span><span class="s">&quot;Int32&quot;</span> <span class="nt">/&gt;</span> 
@@ -111,7 +111,7 @@
       <span class="nt">&lt;/jscript&gt;</span> 
     <span class="nt">&lt;/or&gt;</span> 
   <span class="nt">&lt;/test&gt;</span> 
-<span class="nt">&lt;/errorFilter&gt;</span></code></pre></div>
+<span class="nt">&lt;/errorFilter&gt;</span></code></pre></figure>
 
 <p>For background on the above filter, see the “<a href="http://groups.google.com/group/elmah/browse_thread/thread/ccd5c1f47364f818">Err.raise, how do I filter out custom error numbers…</a>” thread in the <a href="http://groups.google.com/group/elmah">discussion group</a>.</p>
 
@@ -119,23 +119,23 @@
 
 <p>Filters all exceptions that occur on local requests:</p>
 
-<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;errorFilter&gt;</span>
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;errorFilter&gt;</span>
     <span class="nt">&lt;test&gt;</span>
         <span class="nt">&lt;equal</span> <span class="na">binding=</span><span class="s">&quot;Context.Request.IsLocal&quot;</span> 
                <span class="na">value=</span><span class="s">&quot;True&quot;</span> <span class="na">type=</span><span class="s">&quot;Boolean&quot;</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/test&gt;</span>
-<span class="nt">&lt;/errorFilter&gt;</span></code></pre></div>
+<span class="nt">&lt;/errorFilter&gt;</span></code></pre></figure>
 
 <hr />
 
 <p>Filter exceptions where the exception message contains certain words. In the example below, the words must be <em>potentially</em>, <em>dangerous</em>, <em>value</em>, <em>detected</em> and <em>client</em> and in the mentioned sequence. This will filter an exception where the message reads “A potentially dangerous Request.Path value was detected from the client”.</p>
 
-<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;errorFilter&gt;</span>
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;errorFilter&gt;</span>
     <span class="nt">&lt;test&gt;</span>
         <span class="nt">&lt;regex</span> <span class="na">binding=</span><span class="s">&quot;Exception.Message&quot;</span> 
                <span class="na">pattern=</span><span class="s">&quot;(?ix: \b potentially \b.+?\b dangerous \b.+?\b value \b.+?\b detected \b.+?\b client \b )&quot;</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/test&gt;</span>
-<span class="nt">&lt;/errorFilter&gt;</span></code></pre></div>
+<span class="nt">&lt;/errorFilter&gt;</span></code></pre></figure>
 
 <p>This example was created in response to the “<a href="http://groups.google.com/group/elmah/t/a6dd1503430cb69d">Filtering HttpException: A potentially dangerous Request.Path value was detected…</a>” thread in the <a href="http://groups.google.com/group/elmah">discussion group</a>.</p>
 
@@ -143,7 +143,7 @@
 
 <p>Filter exceptions of type <a href="http://msdn.microsoft.com/en-us/library/system.io.filenotfoundexception.aspx"><code>FileNotFoundException</code></a> only when an image is requested (request path ends in <code>.jpg</code>, <code>.gif</code> or <code>.png</code>). In addition, filters exceptions resulting from <a href="http://msdn.microsoft.com/en-us/library/system.web.httpcompileexception.aspx">compilation</a> or <a href="http://msdn.microsoft.com/en-us/library/system.web.httpparseexception.aspx">parsing</a> errors when the request is from local host and the application has <a href="http://msdn.microsoft.com/en-us/library/system.web.httpcontext.isdebuggingenabled.aspx">debugging enabled</a> (typical when developing dynamically compiled pages with in-line code).</p>
 
-<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;errorFilter&gt;</span>
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;errorFilter&gt;</span>
     <span class="nt">&lt;test&gt;</span>
         <span class="nt">&lt;jscript&gt;</span>
             <span class="nt">&lt;expression&gt;</span><span class="cp">&lt;![CDATA[</span>
@@ -167,13 +167,13 @@
 <span class="cp">            ]]&gt;</span><span class="nt">&lt;/expression&gt;</span>
         <span class="nt">&lt;/jscript&gt;</span>
     <span class="nt">&lt;/test&gt;</span>
-<span class="nt">&lt;/errorFilter&gt;</span></code></pre></div>
+<span class="nt">&lt;/errorFilter&gt;</span></code></pre></figure>
 
 <hr />
 
 <p>Filter exceptions of type <a href="http://msdn.microsoft.com/en-us/library/system.threading.tasks.taskcanceledexception.aspx"><code>TaskCanceledException</code></a> but only when the HTTP request method is HEAD and the user agent string contains the text “Microsoft Office Existence Discovery”.</p>
 
-<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;errorFilter&gt;</span>
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;errorFilter&gt;</span>
     <span class="nt">&lt;test&gt;</span>
         <span class="nt">&lt;jscript&gt;</span>
             <span class="nt">&lt;expression&gt;</span><span class="cp">&lt;![CDATA[</span>
@@ -189,7 +189,7 @@
 <span class="cp">            ]]&gt;</span><span class="nt">&lt;/expression&gt;</span>
         <span class="nt">&lt;/jscript&gt;</span>
     <span class="nt">&lt;/test&gt;</span>
-<span class="nt">&lt;/errorFilter&gt;</span></code></pre></div>
+<span class="nt">&lt;/errorFilter&gt;</span></code></pre></figure>
 
 <p>This error typically occurs when Microsoft Excel is setup with a <a href="http://office.microsoft.com/en-us/excel-help/get-external-data-from-a-web-page-HA010218472.aspx">Web Query</a> to asynchronous request handler in your application.</p>
 
@@ -209,7 +209,7 @@
          Portions &copy;&nbsp;2008 <a href="http://tom.preston-werner.com/">Tom Preston-Werner</a> under <a href="https://github.com/jekyll/jekyll/blob/master/LICENSE">MIT&nbsp;License</a>.</p>
     </div>
     <div class="unit two-thirds align-right center-on-mobiles">
-      <p>Published: 2016-01-21 22:27 CET</p>
+      <p>Published: 2016-01-21 23:51 CET</p>
     </div>
   </div>
 </footer>

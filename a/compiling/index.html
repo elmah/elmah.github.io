@@ -2,7 +2,7 @@
 <html lang="en-US">
 <head>
   <meta charset="UTF-8">
-  <title>ELMAH&mdash;Using ELMAH with SQL Server Compact 4.0</title>
+  <title>ELMAH&mdash;Compiling</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="generator" content="Jekyll v3.0.2">
   <link rel="alternate" type="application/atom+xml" title="Recent commits to master branch" href="https://github.com/elmah/www/commits/master.atom">
@@ -70,18 +70,61 @@
     <div class="unit whole">
       <article>
         <div class="improve right hide-on-mobiles">
-          <a href="https://github.com/elmah/www/edit/master/SqlServerCompact.md"><i class="fa fa-pencil"></i> &nbsp;Improve this page</a>
+          <a href="https://github.com/elmah/www/edit/master/Compiling.md"><i class="fa fa-pencil"></i> &nbsp;Improve this page</a>
         </div>
-        <h1>Using ELMAH with SQL Server Compact 4.0</h1>
-        <p>ELMAH, from version 1.2 and onwards, supports the logging of errors to a <a href="http://www.microsoft.com/en-us/download/details.aspx?id=17876">SQL Server Compact 4.0</a> database file using the <code>SqlServerCompactErrorLog</code>, but only against .NET Framework version 3.5 SP1 or a later release. It provides this support using the <a href="http://msdn.microsoft.com/en-us/library/system.data.sqlserverce.aspx">SQL Server Compact ADO.NET Provider</a>. The provider supports medium trust environments under ASP.NET 4.0 but requires full trust on earlier versions.</p>
+        <h1>Compiling</h1>
+        <p>You can compile ELMAH from the sources in one of three ways:</p>
 
-<h2 id="configuring-elmah">Configuring ELMAH</h2>
+<ul>
+  <li>Interactively, using solution and project files supplied for the various Microsoft Visual Studio versions.</li>
+  <li>Using a batch script that requires MS Build (or Microsoft Visual Studio for .NET Framework 1.x) for compilation.</li>
+  <li>Using a batch script that uses only the Visual C# compiler for compilation (i.e. MS Build and Microsoft Visual Studio are not required).</li>
+</ul>
 
-<p>If you look in the <a href="http://elmah.googlecode.com/svn/tags/REL-1.2-SP1/samples/web.config">sample web.config</a> file, you will find commented examples of how to configure ELMAH with each available implementation, including SQL Server Compact 4.0. The main thing to consider is where you want your database to reside. The <a href="http://elmah.googlecode.com/svn/tags/REL-1.2-SP1/samples/web.config">sample web.config</a> file suggests a database called <code>elmah.sdf</code> located in the <code>App_Data</code> folder of your website.</p>
+<h2 id="compiling-interactively-using-microsoft-visual-studio">Compiling Interactively Using Microsoft Visual Studio</h2>
 
-<h2 id="private-deployment-of-sql-server-compact-40-binaries">Private Deployment of SQL Server Compact 4.0 Binaries</h2>
+<p>Use Microsoft Visual Studio solutions found under the <code>src/Solutions</code> directory. There are solution and project files supplied for Microsoft Visual Studio .NET 2002, Microsoft Visual Studio .NET 2003, and Microsoft Visual Studio 2010 under respective sub-directories.</p>
 
-<p>SQL Server Compact 4.0 supports private deployment of x86 and x64 binaries within the same folder structure. See the “<a href="http://erikej.blogspot.com/2010/11/sql-server-compact-private-deployment.html">SQL Server Compact ‘Private Deployment’ on desktop–an overview</a>” blog post for details and links to further information.</p>
+<h2 id="batch-compiling-using-microsoft-visual-studio">Batch Compiling Using Microsoft Visual Studio</h2>
+
+<p>The <code>src/Solutions/build.cmd</code> script launches Microsoft Visual Studio to compile each solution from the command-line. The batch script detects the versions installed on your system and builds only using those versions that are found to be installed. The detection is very simple. It expects to find the various Microsoft Visual Studio versions to be installed in their known default locations. If you supplied a custom path during installation, you may have to adjust the script accordingly.</p>
+
+<p>For .NET Framework 2.0, however, only <code>msbuild.exe</code> and the runtime is needed. Microsoft Visual Studio 2010 is not required for compiling.</p>
+
+<h2 id="batch-compiling-using-c-compiler">Batch Compiling Using C# Compiler</h2>
+
+<p>The <code>build.cmd</code> in the root of the distribution uses the Visual C# compiler to compile the sources. The script takes a single argument of that specifies the .NET Framework runtime to target. You can specify <code>all</code>, <code>1.0</code>, <code>1.1</code> or <code>2.0</code>. Running the script without any arguments displays usage help, as shown in the following example:</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">ELMAH - Error Logging Modules and Handlers for ASP.NET
+Copyright (c) 2004-9 Atif Aziz. All rights reserved.
+
+Usage: build TARGET
+
+TARGET
+    is the target to build (all, 1.0, 1.1, 2.0)
+
+This is a batch script that can used to build ELMAH binaries for
+Microsoft .NET Framework 1.x and 2.0. The binaries are created for
+only those versions that are found to be installed in the expected
+locations on the local machine.
+
+The following versions appear to be installed on this system:
+
+- v1.0.3705
+- v1.1.4322
+- v2.0.50727
+
+Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</code></pre></figure>
 
       </article>
     </div>

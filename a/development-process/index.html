@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>ELMAH&mdash;Development Process</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="generator" content="Jekyll v2.5.3">
+  <meta name="generator" content="Jekyll v3.0.2">
   <link rel="alternate" type="application/atom+xml" title="Recent commits to master branch" href="https://github.com/elmah/www/commits/master.atom">
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic,900">
   <link rel="stylesheet" href="/css/screen.css">
@@ -116,18 +116,18 @@
 
 <p>First, make sure you have Mercurial installed by running the command:</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>hg version
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>hg version
 Mercurial Distributed SCM <span class="o">(</span>version 2.0.1<span class="o">)</span>
 <span class="o">(</span>see http://mercurial.selenic.com <span class="k">for</span> more information<span class="o">)</span>
 
 Copyright <span class="o">(</span>C<span class="o">)</span> 2005-2011 Matt Mackall and others
 This is free software<span class="p">;</span> see the <span class="nb">source </span><span class="k">for</span> copying conditions. There is NO
-warranty<span class="p">;</span> not even <span class="k">for</span> MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</code></pre></div>
+warranty<span class="p">;</span> not even <span class="k">for</span> MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</code></pre></figure>
 
 <p>If you don’t want your hostname and username to be made public, you can change how you’re identified in commits you make by editing your ~/.hgrc file:</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>ui<span class="o">]</span>
-<span class="nv">username</span> <span class="o">=</span> John Doe</code></pre></div>
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>ui<span class="o">]</span>
+<span class="nv">username</span> <span class="o">=</span> John Doe</code></pre></figure>
 
 <h3 id="making-a-clone-of-the-repository">Making a clone of the repository</h3>
 
@@ -137,11 +137,11 @@ warranty<span class="p">;</span> not even <span class="k">for</span> MERCHANTABI
 
 <p>To create the local clone, click on <strong>Source</strong> tab of your clone page, and then use the checkout command provided there:</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">hg clone https://johndoe@bitbucket.org/johndoe/main johndoe-elmah</code></pre></div>
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">hg clone https://johndoe@bitbucket.org/johndoe/main johndoe-elmah</code></pre></figure>
 
 <p>Optionally, you can add your username and password to it (so you don’t have to type them in every time):</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">hg clone https://johndoe@bitbucket.org/johndoe/main johndoe-elmah</code></pre></div>
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">hg clone https://johndoe@bitbucket.org/johndoe/main johndoe-elmah</code></pre></figure>
 
 <p>and that’s it - you have a local copy of your clone (in this example, in subdirectory johndoe-elmah) which you can then make changes to.</p>
 
@@ -149,41 +149,41 @@ warranty<span class="p">;</span> not even <span class="k">for</span> MERCHANTABI
 
 <p>The recommended way of bringing changes in from the main repository is the use of hg fetch:</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>hg fetch https://bitbucket.org/project-elmah/main</code></pre></div>
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>hg fetch https://bitbucket.org/project-elmah/main</code></pre></figure>
 
 <p>Please note that the fetch command is a Mercurial extension which is equivalent to hg pull -u plus hg merge plus hg commit - for more details please see the references, but this basically means that it will try to merge the incoming changes with your local changes.</p>
 
 <p>If you want to see what will be brought in with the above command before running it, you can use:</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>hg incoming</code></pre></div>
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>hg incoming</code></pre></figure>
 
 <h3 id="committing-changes-locally">Committing changes locally</h3>
 
 <p>Commiting changes locally is easy - run hg status to see the state of your local clone:</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>hg status
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>hg status
 ?  MyNewFile
 M  MyChangedFile
-!  MyDeletedFile</code></pre></div>
+!  MyDeletedFile</code></pre></figure>
 
 <p>In the above example, it shows one file that it knows nothing about (MyNewFile), one that it knows about but is missing (MyDeletedFile) and one that has had changes made to it.</p>
 
 <p>To add all the previously unknown files and remove any missing files, use the addremove command:</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>hg addremove
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>hg addremove
 Adding MyNewFile
-Deleting MyDeletedFile</code></pre></div>
+Deleting MyDeletedFile</code></pre></figure>
 
 <p>hg status then shows the new status:</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>hg status
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>hg status
 A  MyNewFile
 M  MyChangedFile
-D  MyDeletedFile</code></pre></div>
+D  MyDeletedFile</code></pre></figure>
 
 <p>If you wish to see what has changed, you can use the hg diff command. Finally, you can commit the changes with</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>hg commit</code></pre></div>
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>hg commit</code></pre></figure>
 
 <p>which will open an editor for you to type in a description for these changes. Optionally, you can specify filenames to hg commit in order to commit only part of your current changes.</p>
 
@@ -193,26 +193,26 @@ D  MyDeletedFile</code></pre></div>
 
 <p>Pushing changes to your online clone is incredibly simple:</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>hg push
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>hg push
 pushing to https://johndoe:***@bitbucket.org/johndoe/main
 searching <span class="k">for</span> changes
 adding changesets
 adding manifests
 adding file changes
-added <span class="m">1</span> changesets with <span class="m">1</span> changes to <span class="m">1</span> files</code></pre></div>
+added <span class="m">1</span> changesets with <span class="m">1</span> changes to <span class="m">1</span> files</code></pre></figure>
 
 <p>and you’re done.</p>
 
 <p>If you want to see what changes you’re going to push before you do it, you can also use the following command:</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>hg outgoing
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>hg outgoing
 comparing with https://johndoe:***@bitbucket.org/johndoe/main
 searching <span class="k">for</span> changes
 changeset:   5:b6fed4f21233
 tag:         tip
 user:        John Doe
 date:        Tue May <span class="m">05</span> 06:55:53 <span class="m">2009</span> +0000
-summary:     Added an extra line of output</code></pre></div>
+summary:     Added an extra line of output</code></pre></figure>
 
 <h3 id="requesting-a-code-review">Requesting a code review</h3>
 
@@ -242,7 +242,7 @@ summary:     Added an extra line of output</code></pre></div>
          Portions &copy;&nbsp;2008 <a href="http://tom.preston-werner.com/">Tom Preston-Werner</a> under <a href="https://github.com/jekyll/jekyll/blob/master/LICENSE">MIT&nbsp;License</a>.</p>
     </div>
     <div class="unit two-thirds align-right center-on-mobiles">
-      <p>Published: 2016-01-21 22:27 CET</p>
+      <p>Published: 2016-01-21 23:51 CET</p>
     </div>
   </div>
 </footer>

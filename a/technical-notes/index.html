@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>ELMAH&mdash;Technical Notes</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="generator" content="Jekyll v2.5.3">
+  <meta name="generator" content="Jekyll v3.0.2">
   <link rel="alternate" type="application/atom+xml" title="Recent commits to master branch" href="https://github.com/elmah/www/commits/master.atom">
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic,900">
   <link rel="stylesheet" href="/css/screen.css">
@@ -134,9 +134,9 @@ See also: <del><a href="http://workspaces.gotdotnet.com/elmah">GotDotNet Workspa
 
 <p>So with all these modules and handlers in hand, the next question is how to use and enable them in a web application. Let’s start with a tour for enabling logging for a single application. Open the <code>web.config</code> for any desired web application and add the following line to the <code>&lt;httpHandlers&gt;</code> section:</p>
 
-<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;add</span> <span class="na">verb=</span><span class="s">&quot;POST,GET,HEAD&quot;</span> 
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;add</span> <span class="na">verb=</span><span class="s">&quot;POST,GET,HEAD&quot;</span> 
      <span class="na">path=</span><span class="s">&quot;elmah/default.aspx&quot;</span>
-     <span class="na">type=</span><span class="s">&quot;GotDotNet.Elmah.ErrorLogPageFactory, GotDotNet.Elmah, Version=1.0.5527.0, Culture=neutral, PublicKeyToken=978d5e1bd64b33e5&quot;</span> <span class="nt">/&gt;</span></code></pre></div>
+     <span class="na">type=</span><span class="s">&quot;GotDotNet.Elmah.ErrorLogPageFactory, GotDotNet.Elmah, Version=1.0.5527.0, Culture=neutral, PublicKeyToken=978d5e1bd64b33e5&quot;</span> <span class="nt">/&gt;</span></code></pre></figure>
 
 <p>Copy the <code>GotDotNet.Elmah.dll</code> assembly to the bin folder and that’s it. At this point, you can navigate to the specified path (see footnote 2) and see a page similar to Figure 5:</p>
 
@@ -144,8 +144,8 @@ See also: <del><a href="http://workspaces.gotdotnet.com/elmah">GotDotNet Workspa
 
 <p>Since there are no errors yet, the page is pretty much empty. If you generate an exception in your application, you still won’t see any errors here. This is because we haven’t added the logging module, so let’s do that now. Go to the <code>&lt;httpModules&gt;</code> section and add the following line:</p>
 
-<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ErrorLog&quot;</span>
-     <span class="na">type=</span><span class="s">&quot;GotDotNet.Elmah.ErrorLogModule, GotDotNet.Elmah, Version=1.0.5527.0, Culture=neutral, PublicKeyToken=978d5e1bd64b33e5&quot;</span> <span class="nt">/&gt;</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ErrorLog&quot;</span>
+     <span class="na">type=</span><span class="s">&quot;GotDotNet.Elmah.ErrorLogModule, GotDotNet.Elmah, Version=1.0.5527.0, Culture=neutral, PublicKeyToken=978d5e1bd64b33e5&quot;</span> <span class="nt">/&gt;</span></code></pre></figure>
 
 <p>If you generate an error now then the error log will display it. If you can’t think of a way to generate an exception and test the functionality then don’t worry. The solution comes with a TestException that can be generated at any time by appending /test to the path for the handlers. So in the address bar of the browser, type:</p>
 
@@ -188,11 +188,11 @@ See also: <del><a href="http://workspaces.gotdotnet.com/elmah">GotDotNet Workspa
 
 <p>Now we can go ahead and configure the error log as follows:</p>
 
-<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;gotdotnet.elmah&gt;</span>
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;gotdotnet.elmah&gt;</span>
   <span class="nt">&lt;errorLog</span> 
     <span class="na">type=</span><span class="s">&quot;GotDotNet.Elmah.SqlErrorLog, GotDotNet.Elmah, Version=1.0.5527.0, Culture=neutral, PublicKeyToken=978d5e1bd64b33e5&quot;</span> 
     <span class="na">connectionString=</span><span class="s">&quot;Server=.;Database=ELMAH;Trusted_Connection=True&quot;</span> <span class="nt">/&gt;</span>
-<span class="nt">&lt;/gotdotnet.elmah&gt;</span></code></pre></div>
+<span class="nt">&lt;/gotdotnet.elmah&gt;</span></code></pre></figure>
 
 <p>The <code>type</code> attribute on <code>errorLog</code> specifies the class that now serves as the error log implementation (<code>SqlErrorLog</code>). Change the <code>connectionString</code> attribute as needed. With this in place, you can try to generate once more some exceptions (like the test one earlier) and see that errors are indeed logged into the database and survive the application’s lifetime.</p>
 
@@ -200,13 +200,13 @@ See also: <del><a href="http://workspaces.gotdotnet.com/elmah">GotDotNet Workspa
 
 <p>Now let’s add the final piece, which is getting an e-mail upon an exception. For this, add the following module to the configuration file:</p>
 
-<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;add</span> 
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;add</span> 
   <span class="na">name=</span><span class="s">&quot;ErrorMail&quot;</span> 
-  <span class="na">type=</span><span class="s">&quot;GotDotNet.Elmah.ErrorMailModule, GotDotNet.Elmah, Version=1.0.5527.0, Culture=neutral, PublicKeyToken=978d5e1bd64b33e5&quot;</span> <span class="nt">/&gt;</span></code></pre></div>
+  <span class="na">type=</span><span class="s">&quot;GotDotNet.Elmah.ErrorMailModule, GotDotNet.Elmah, Version=1.0.5527.0, Culture=neutral, PublicKeyToken=978d5e1bd64b33e5&quot;</span> <span class="nt">/&gt;</span></code></pre></figure>
 
 <p>And the following section handler under the <code>gotdotnet.elmah</code> section group registered earlier:</p>
 
-<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;configSections&gt;</span>
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;configSections&gt;</span>
   <span class="nt">&lt;sectionGroup</span> <span class="na">name=</span><span class="s">&quot;gotdotnet.elmah&quot;</span><span class="nt">&gt;</span> 
     <span class="nt">&lt;section</span> 
       <span class="na">name=</span><span class="s">&quot;errorLog&quot;</span> 
@@ -215,16 +215,16 @@ See also: <del><a href="http://workspaces.gotdotnet.com/elmah">GotDotNet Workspa
       <span class="na">name=</span><span class="s">&quot;errorMail&quot;</span> 
       <span class="na">type=</span><span class="s">&quot;System.Configuration.SingleTagSectionHandler, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089&quot;</span> <span class="nt">/&gt;</span> 
   <span class="nt">&lt;/sectionGroup&gt;</span> 
-<span class="nt">&lt;/configSections&gt;</span></code></pre></div>
+<span class="nt">&lt;/configSections&gt;</span></code></pre></figure>
 
 <p>The new section can now be configured as shown error:</p>
 
-<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;gotdotnet.elmah&gt;</span>
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;gotdotnet.elmah&gt;</span>
   <span class="nt">&lt;errorLog</span> 
     <span class="na">type=</span><span class="s">&quot;GotDotNet.Elmah.SqlErrorLog, GotDotNet.Elmah, Version=1.0.5527.0, Culture=neutral, PublicKeyToken=978d5e1bd64b33e5&quot;</span> 
     <span class="na">connectionString=</span><span class="s">&quot;Server=.;Database=ELMAH;Trusted_Connection=True&quot;</span> <span class="nt">/&gt;</span>
   <span class="nt">&lt;errorMail</span> <span class="na">to=</span><span class="s">&quot;john.doe@example.com&quot;</span> <span class="nt">/&gt;</span> 
-<span class="nt">&lt;/gotdotnet.elmah&gt;</span></code></pre></div>
+<span class="nt">&lt;/gotdotnet.elmah&gt;</span></code></pre></figure>
 
 <p>The minimal setting required by the error mailing module is the recipient’s e-mail address, which is specified here using the <code>to</code> attribute (see footnote 9). Now if the application generates any exceptions then you should receive an e-mail in addition to it being logged in the database.</p>
 
@@ -324,7 +324,7 @@ rather stable and independent. You also want to be able to ship the log to anoth
 
 <p>The <code>Error</code> class also sports XML serialization via its <code>ToXml</code> and <code>FromXml</code> methods. Here’s an example of how it looks like (see footnote 16):</p>
 
-<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;error</span> 
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;error</span> 
   <span class="na">application=</span><span class="s">&quot;/LM/W3SVC/1/Root/ElmahDemo&quot;</span> 
   <span class="na">host=</span><span class="s">&quot;ATIFA01&quot;</span> 
   <span class="na">type=</span><span class="s">&quot;System.IndexOutOfRangeException&quot;</span> 
@@ -370,7 +370,7 @@ rather stable and independent. You also want to be able to ship the log to anoth
     <span class="nt">&lt;/item&gt;</span>
     <span class="c">&lt;!-- rest removed for brevity --&gt;</span>
   <span class="nt">&lt;/serverVariables&gt;</span>
-<span class="nt">&lt;/error&gt;</span></code></pre></div>
+<span class="nt">&lt;/error&gt;</span></code></pre></figure>
 
 <p>Note that the <code>ToXml</code> and <code>FromXml</code> methods come from my own interface, namely <code>IXmlExportable</code>. The reason for doing this is threefold. First, <a href="http://msdn2.microsoft.com/en-us/library/system.xml.serialization.ixmlserializable.aspx"><code>IXmlSerializable</code></a> is officially un-documented in .NET Framework 1.x. It becomes documented with Whidbey so this argument does not hold so strong. Second, I didn’t want to implement <a href="http://msdn2.microsoft.com/en-us/library/system.xml.serialization.ixmlserializable.getschema.aspx"><code>GetSchema</code></a>. Third, I read and write the XML slightly differently. While <a href="http://msdn2.microsoft.com/en-us/library/system.xml.serialization.ixmlserializable.aspx"><code>IXmlSerializable</code></a> places an extra container element around the object’s XML, I didn’t want it because it felt unnecessary. In any case, <a href="http://msdn2.microsoft.com/en-us/library/system.xml.serialization.ixmlserializable.aspx"><code>IXmlSerializable</code></a> can always be implemented later in terms of <code>IXmlExportable</code> so this is not a big deal.</p>
 
@@ -631,7 +631,7 @@ rather stable and independent. You also want to be able to ship the log to anoth
          Portions &copy;&nbsp;2008 <a href="http://tom.preston-werner.com/">Tom Preston-Werner</a> under <a href="https://github.com/jekyll/jekyll/blob/master/LICENSE">MIT&nbsp;License</a>.</p>
     </div>
     <div class="unit two-thirds align-right center-on-mobiles">
-      <p>Published: 2016-01-21 22:27 CET</p>
+      <p>Published: 2016-01-21 23:51 CET</p>
     </div>
   </div>
 </footer>
