@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>ELMAH&mdash;Using ELMAH with Oracle</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="generator" content="Jekyll v3.0.2">
+  <meta name="generator" content="Jekyll v3.0.0">
   <link rel="alternate" type="application/atom+xml" title="Recent commits to master branch" href="https://github.com/elmah/www/commits/master.atom">
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic,900">
   <link rel="stylesheet" href="/css/screen.css">
@@ -77,7 +77,7 @@
 
 <h2 id="configuring-your-database">Configuring Your Database</h2>
 
-<p>The first thing you need to do in order to use the <code>OracleErrorLog</code> is to configure your database. The ELMAH source code includes a file called <a href="http://elmah.googlecode.com/svn/trunk/src/Elmah/Oracle.sql"><code>Oracle.sql</code></a> which is the basis for everything you need to do.</p>
+<p>The first thing you need to do in order to use the <code>OracleErrorLog</code> is to configure your database. The ELMAH source code includes a file called <a href="https://www.assembla.com/spaces/elmah/subversion/source/HEAD/trunk/src/Elmah/Oracle.sql"><code>Oracle.sql</code></a> which is the basis for everything you need to do.</p>
 
 <h3 id="the-simple-way">The Simple Way</h3>
 
@@ -85,7 +85,7 @@
 
 <ol>
   <li>Log into Oracle as the owner of the objects that you are going to create (probably using SQL*Plus)</li>
-  <li>Run the <a href="http://elmah.googlecode.com/svn/trunk/src/Elmah/Oracle.sql"><code>Oracle.sql</code></a> script as is</li>
+  <li>Run the <a href="https://www.assembla.com/spaces/elmah/subversion/source/HEAD/trunk/src/Elmah/Oracle.sql"><code>Oracle.sql</code></a> script as is</li>
 </ol>
 
 <p>NB In order to run the script, the logged in user will require <code>CREATE TABLE</code>, <code>CREATE PROCEDURE</code>, and <code>CREATE SEQUENCE</code> privileges.</p>
@@ -109,15 +109,15 @@ To do this, modify all the <code>CREATE</code> statements to be qualified with t
 <h4 id="which-user-will-connect-to-the-schema-through-aspnet">2) Which user will connect to the schema through ASP.NET?</h4>
 
 <p>If you are planning to use the data owner, you don’t have to do anything else, as your database is set up and ready to go.
-However, if you want to lock things down, you will need to <code>GRANT EXECUTE</code> privileges on the Oracle packages <code>pkg_elmah$log_error</code> and <code>pkg_elmah$get_error</code>. The comments at the end of the <a href="http://elmah.googlecode.com/svn/trunk/src/Elmah/Oracle.sql"><code>Oracle.sql</code></a> file give you three options on how to do this.</p>
+However, if you want to lock things down, you will need to <code>GRANT EXECUTE</code> privileges on the Oracle packages <code>pkg_elmah$log_error</code> and <code>pkg_elmah$get_error</code>. The comments at the end of the <a href="https://www.assembla.com/spaces/elmah/subversion/source/HEAD/trunk/src/Elmah/Oracle.sql"><code>Oracle.sql</code></a> file give you three options on how to do this.</p>
 
-<p>NB If you do take this approach, you will need to set the <code>schemaOwner</code> parameter in your <code>web.config</code>. In which case, please look at the sample <a href="http://elmah.googlecode.com/svn/trunk/samples/web.config"><code>web.config</code></a> file, which offers guidance.</p>
+<p>NB If you do take this approach, you will need to set the <code>schemaOwner</code> parameter in your <code>web.config</code>. In which case, please look at the sample <a href="https://www.assembla.com/spaces/elmah/subversion/source/HEAD/trunk/samples/web.config"><code>web.config</code></a> file, which offers guidance.</p>
 
 <h2 id="configuring-elmah">Configuring ELMAH</h2>
 
 <p>So at this point, Oracle is set up and you’re pretty much done!!</p>
 
-<p>You now need to set up your web.config to use Elmah and in particular the Oracle implementation. The best place to start here is to look in the sample <a href="http://elmah.googlecode.com/svn/trunk/samples/web.config">web.config</a> file, which contains commented examples of how to configure Elmah with each available implementation, including Oracle.</p>
+<p>You now need to set up your web.config to use Elmah and in particular the Oracle implementation. The best place to start here is to look in the sample <a href="https://www.assembla.com/spaces/elmah/subversion/source/HEAD/trunk/samples/web.config"><code>web.config</code></a> file, which contains commented examples of how to configure Elmah with each available implementation, including Oracle.</p>
 
 <p>NB You can use the Oracle implementation across multiple websites, or have a separate database for each one. You can set an application name for each website using the <code>applicationName="xxx"</code> setting, or you can leave Elmah to infer the application name by itself.</p>
 
@@ -157,7 +157,7 @@ However, if you want to lock things down, you will need to <code>GRANT EXECUTE</
          Portions &copy;&nbsp;2008 <a href="http://tom.preston-werner.com/">Tom Preston-Werner</a> under <a href="https://github.com/jekyll/jekyll/blob/master/LICENSE">MIT&nbsp;License</a>.</p>
     </div>
     <div class="unit two-thirds align-right center-on-mobiles">
-      <p>Published: 2016-01-21 23:51 CET</p>
+      <p>Published: 2016-01-22 09:03 W. Europe Standard Time</p>
     </div>
   </div>
 </footer>

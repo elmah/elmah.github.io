@@ -2,7 +2,7 @@
 <html lang="en-US">
 <head>
   <meta charset="UTF-8">
-  <title>ELMAH&mdash;Using ELMAH with SQL Server Compact 4.0</title>
+  <title>ELMAH&mdash;Using ELMAH with Microsoft Access</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="generator" content="Jekyll v3.0.0">
   <link rel="alternate" type="application/atom+xml" title="Recent commits to master branch" href="https://github.com/elmah/www/commits/master.atom">
@@ -70,18 +70,41 @@
     <div class="unit whole">
       <article>
         <div class="improve right hide-on-mobiles">
-          <a href="https://github.com/elmah/www/edit/master/SqlServerCompact.md"><i class="fa fa-pencil"></i> &nbsp;Improve this page</a>
+          <a href="https://github.com/elmah/www/edit/master/Access.md"><i class="fa fa-pencil"></i> &nbsp;Improve this page</a>
         </div>
-        <h1>Using ELMAH with SQL Server Compact 4.0</h1>
-        <p>ELMAH, from version 1.2 and onwards, supports the logging of errors to a <a href="http://www.microsoft.com/en-us/download/details.aspx?id=17876">SQL Server Compact 4.0</a> database file using the <code>SqlServerCompactErrorLog</code>, but only against .NET Framework version 3.5 SP1 or a later release. It provides this support using the <a href="http://msdn.microsoft.com/en-us/library/system.data.sqlserverce.aspx">SQL Server Compact ADO.NET Provider</a>. The provider supports medium trust environments under ASP.NET 4.0 but requires full trust on earlier versions.</p>
+        <h1>Using ELMAH with Microsoft Access</h1>
+        <h2 id="introduction">Introduction</h2>
+
+<p>ELMAH supports the logging of errors to a Microsoft Access database file using the <code>AccessErrorLog</code>, and does so against all versions of the .NET Framework. It provides this support using the in-built <a href="http://msdn.microsoft.com/en-us/library/system.data.oledb.aspx">OLE DB provider</a>. The managed OLE DB provider needs <a href="http://msdn.microsoft.com/en-us/library/system.data.oledb.oledbpermission.aspx">OleDbPermission</a> to run therefore you will most likely encounter security issues when trying to use <code>AccessErrorLog</code> in a <a href="http://msdn.microsoft.com/en-us/library/ms998341.aspx">medium trust environment</a>.</p>
 
 <h2 id="configuring-elmah">Configuring ELMAH</h2>
 
-<p>If you look in the <a href="http://elmah.googlecode.com/svn/tags/REL-1.2-SP1/samples/web.config">sample web.config</a> file, you will find commented examples of how to configure ELMAH with each available implementation, including SQL Server Compact 4.0. The main thing to consider is where you want your database to reside. The <a href="http://elmah.googlecode.com/svn/tags/REL-1.2-SP1/samples/web.config">sample web.config</a> file suggests a database called <code>elmah.sdf</code> located in the <code>App_Data</code> folder of your website.</p>
+<p>If you look in the sample <a href="https://www.assembla.com/spaces/elmah/subversion/source/HEAD//trunk/samples/web.config"><code>web.config</code></a> file. You will find commented examples of how to configure ELMAH with each available implementation, including Microsoft Access.</p>
 
-<h2 id="private-deployment-of-sql-server-compact-40-binaries">Private Deployment of SQL Server Compact 4.0 Binaries</h2>
+<p>The main thing to consider here is where you want your database to reside. The sample <a href="https://www.assembla.com/spaces/elmah/subversion/source/HEAD//trunk/samples/web.config"><code>web.config</code></a> file suggests a database called <code>elmah.mdb</code> located in the <code>App_Data</code> folder of your website.</p>
 
-<p>SQL Server Compact 4.0 supports private deployment of x86 and x64 binaries within the same folder structure. See the “<a href="http://erikej.blogspot.com/2010/11/sql-server-compact-private-deployment.html">SQL Server Compact ‘Private Deployment’ on desktop–an overview</a>” blog post for details and links to further information.</p>
+<h3 id="choosing-appdata">Choosing App_Data</h3>
+
+<p>There is one nice advantage of choosing the <code>App_Data</code> folder as the location for your Access database. Visual Studio will automatically detect it is there and will display it in the <a href="http://msdn.microsoft.com/en-us/library/x603htbk.aspx">Server Explorer</a> window:</p>
+
+<p><img src="/img/AccessServerExplorer.png" alt="Access Server Explorer" /></p>
+
+<p>If you then bring up the context-menu for the <code>ELMAH_Error</code> table (usually by right-clicking the node) you will be able to select <em>Retrieve Data</em> and then view your logged errors directly from within Visual Studio:</p>
+
+<p><img src="/img/AccessServerExplorerContextMenu.png" alt="Access Server Explorer Context Menu" /></p>
+
+<h2 id="creating-the-access-database">Creating the Access Database</h2>
+
+<p>Normally, you shouldn’t need to create the Access database that you have configured in your connection strings. If the database does not exist, <code>AccessErrorLog</code> will attempt to create it for you. In order for this to work, the user account that is running your website will need file creation permissions on the directory where the MDB will be created. In certain situations, this might not be possible (e.g. in a secure enterprise environment), so there is also a manual way of creating the database. The ELMAH source code includes a file called <a href="https://www.assembla.com/spaces/elmah/subversion/source/HEAD//trunk/src/Elmah/mkmdb.vbs"><code>mkmdb.vbs</code></a> which is the VBScript file that <code>AccessErrorLog</code> also executes at run-time to create the Access database. To create the database manually yourself, simply save <a href="https://www.assembla.com/spaces/elmah/subversion/source/HEAD//trunk/src/Elmah/mkmdb.vbs"><code>mkmdb.vbs</code></a> to a local disk and then run it as follows:</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">mkmdb.vbs MDB-PATH</code></pre></figure>
+
+<p>where <code>MDB-PATH</code> specifies the path at which the MDB file should be created, e.g.:</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">mkmdb.vbs %temp%\elmah.mdb</code></pre></figure>
+
+<p><em>Note that the full path <strong>must</strong> exist in order for the VBScript to succeed.</em> Once the file has been created, you can move it and rename it so that it can be deployed to your secure environment.</p>
+
 
       </article>
     </div>
