@@ -1,0 +1,303 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <title>ELMAH&mdash;Error Log Implementations and Guidance on Choosing</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="generator" content="Jekyll v3.0.0">
+  <link rel="alternate" type="application/atom+xml" title="Recent commits to master branch" href="https://github.com/elmah/www/commits/master.atom">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic,900">
+  <link rel="stylesheet" href="/css/screen.css">
+  <!--[if lt IE 9]>
+  <script src="/js/html5shiv.min.js"></script>
+  <script src="/js/respond.min.js"></script>
+  <![endif]-->
+</head>
+
+
+<body class="wrap">
+  <header role="banner">
+  <nav class="mobile-nav show-on-mobiles">
+    <ul>
+  <li class="">
+    <a href="/">Home</a>
+  </li>
+  <li class="">
+    <a href="/downloads/"><i class="fa fa-download show-on-mobiles"></i><span class="hide-on-mobiles">Download</span></a>
+  </li>
+  <li>
+    <a href="https://code.google.com/p/elmah/source/checkout">Sources</a>
+  </li>
+  <li>
+    <a href="https://github.com/elmah/www"><span class="hide-on-mobiles">View on </span>GitHub</a>
+  </li>
+</ul>
+
+  </nav>
+  <div class="grid">
+    <div class="unit one-third center-on-mobiles">
+      <h1>
+        <i class="fa fa-bolt"></i>
+        <a href="/">
+          <span title="Error Logging Modules and Handlers">ELMAH</span>
+        </a>
+      </h1>
+    </div>
+    <nav class="main-nav unit two-thirds hide-on-mobiles">
+      <ul>
+  <li class="">
+    <a href="/">Home</a>
+  </li>
+  <li class="">
+    <a href="/downloads/"><i class="fa fa-download show-on-mobiles"></i><span class="hide-on-mobiles">Download</span></a>
+  </li>
+  <li>
+    <a href="https://code.google.com/p/elmah/source/checkout">Sources</a>
+  </li>
+  <li>
+    <a href="https://github.com/elmah/www"><span class="hide-on-mobiles">View on </span>GitHub</a>
+  </li>
+</ul>
+
+    </nav>
+  </div>
+</header>
+
+
+  <section class="standalone">
+  <div class="grid">
+
+    <div class="unit whole">
+      <article>
+        <div class="improve right hide-on-mobiles">
+          <a href="https://github.com/elmah/www/edit/master/ErrorLogImplementations.md"><i class="fa fa-pencil"></i> &nbsp;Improve this page</a>
+        </div>
+        <h1>Error Log Implementations and Guidance on Choosing</h1>
+        <p>ELMAH currently ships with seven error log implementations, listed in alphabetical order in the following table, together with their compatibility and .NET Framework version availability:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Implementation</th>
+      <th style="text-align: left">Description</th>
+      <th style="text-align: center">Medium Trust</th>
+      <th style="text-align: center">1.0</th>
+      <th style="text-align: center">1.1</th>
+      <th style="text-align: center">2.0</th>
+      <th style="text-align: center">3.5</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><code>AccessErrorLog</code></td>
+      <td style="text-align: left">Logs errors in an Microsoft Access database file</td>
+      <td style="text-align: center"><img class="emoji" title=":x:" alt=":x:" src="https://assets.github.com/images/icons/emoji/unicode/274c.png" height="20" width="20" align="absmiddle" /></td>
+      <td style="text-align: center"><img class="emoji" title=":ok:" alt=":ok:" src="https://assets.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle" /></td>
+      <td style="text-align: center"><img class="emoji" title=":ok:" alt=":ok:" src="https://assets.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle" /></td>
+      <td style="text-align: center"><img class="emoji" title=":ok:" alt=":ok:" src="https://assets.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle" /></td>
+      <td style="text-align: center"><img class="emoji" title=":ok:" alt=":ok:" src="https://assets.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle" /></td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code>MemoryErrorLog</code></td>
+      <td style="text-align: left">Logs errors to (volatile) memory</td>
+      <td style="text-align: center"><img class="emoji" title=":ok:" alt=":ok:" src="https://assets.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle" /></td>
+      <td style="text-align: center"><img class="emoji" title=":ok:" alt=":ok:" src="https://assets.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle" /></td>
+      <td style="text-align: center"><img class="emoji" title=":ok:" alt=":ok:" src="https://assets.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle" /></td>
+      <td style="text-align: center"><img class="emoji" title=":ok:" alt=":ok:" src="https://assets.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle" /></td>
+      <td style="text-align: center"><img class="emoji" title=":ok:" alt=":ok:" src="https://assets.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle" /></td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code>OracleErrorLog</code></td>
+      <td style="text-align: left">Logs errors to an Oracle database</td>
+      <td style="text-align: center"><img class="emoji" title=":x:" alt=":x:" src="https://assets.github.com/images/icons/emoji/unicode/274c.png" height="20" width="20" align="absmiddle" /></td>
+      <td style="text-align: center"><img class="emoji" title=":x:" alt=":x:" src="https://assets.github.com/images/icons/emoji/unicode/274c.png" height="20" width="20" align="absmiddle" /></td>
+      <td style="text-align: center"><img class="emoji" title=":ok:" alt=":ok:" src="https://assets.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle" /></td>
+      <td style="text-align: center"><img class="emoji" title=":ok:" alt=":ok:" src="https://assets.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle" /></td>
+      <td style="text-align: center"><img class="emoji" title=":ok:" alt=":ok:" src="https://assets.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle" /></td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code>SqlErrorLog</code></td>
+      <td style="text-align: left">Logs errors to a Microsoft SQL Server database</td>
+      <td style="text-align: center"><img class="emoji" title=":ok:" alt=":ok:" src="https://assets.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle" /></td>
+      <td style="text-align: center"><img class="emoji" title=":ok:" alt=":ok:" src="https://assets.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle" /></td>
+      <td style="text-align: center"><img class="emoji" title=":ok:" alt=":ok:" src="https://assets.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle" /></td>
+      <td style="text-align: center"><img class="emoji" title=":ok:" alt=":ok:" src="https://assets.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle" /></td>
+      <td style="text-align: center"><img class="emoji" title=":ok:" alt=":ok:" src="https://assets.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle" /></td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code>SQLiteErrorLog</code></td>
+      <td style="text-align: left">Logs errors to a SQLite database file</td>
+      <td style="text-align: center"><img class="emoji" title=":x:" alt=":x:" src="https://assets.github.com/images/icons/emoji/unicode/274c.png" height="20" width="20" align="absmiddle" /></td>
+      <td style="text-align: center"><img class="emoji" title=":x:" alt=":x:" src="https://assets.github.com/images/icons/emoji/unicode/274c.png" height="20" width="20" align="absmiddle" /></td>
+      <td style="text-align: center"><img class="emoji" title=":ok:" alt=":ok:" src="https://assets.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle" /></td>
+      <td style="text-align: center"><img class="emoji" title=":ok:" alt=":ok:" src="https://assets.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle" /></td>
+      <td style="text-align: center"><img class="emoji" title=":ok:" alt=":ok:" src="https://assets.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle" /></td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code>VistaDBErrorLog</code></td>
+      <td style="text-align: left">Logs errors to a VistaDB (Express Edition) database file</td>
+      <td style="text-align: center"><img class="emoji" title=":ok:" alt=":ok:" src="https://assets.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle" /></td>
+      <td style="text-align: center"><img class="emoji" title=":x:" alt=":x:" src="https://assets.github.com/images/icons/emoji/unicode/274c.png" height="20" width="20" align="absmiddle" /></td>
+      <td style="text-align: center"><img class="emoji" title=":x:" alt=":x:" src="https://assets.github.com/images/icons/emoji/unicode/274c.png" height="20" width="20" align="absmiddle" /></td>
+      <td style="text-align: center"><img class="emoji" title=":ok:" alt=":ok:" src="https://assets.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle" /></td>
+      <td style="text-align: center"><img class="emoji" title=":ok:" alt=":ok:" src="https://assets.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle" /></td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code>XmlFileErrorLog</code></td>
+      <td style="text-align: left">Logs errors to a directory as loose XML files</td>
+      <td style="text-align: center"><img class="emoji" title=":ok:" alt=":ok:" src="https://assets.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle" /><sup>1</sup></td>
+      <td style="text-align: center"><img class="emoji" title=":ok:" alt=":ok:" src="https://assets.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle" /></td>
+      <td style="text-align: center"><img class="emoji" title=":ok:" alt=":ok:" src="https://assets.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle" /></td>
+      <td style="text-align: center"><img class="emoji" title=":ok:" alt=":ok:" src="https://assets.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle" /></td>
+      <td style="text-align: center"><img class="emoji" title=":ok:" alt=":ok:" src="https://assets.github.com/images/icons/emoji/unicode/1f197.png" height="20" width="20" align="absmiddle" /></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="note info">
+  <h5><code>XmlFileErrorLog</code> Under Medium Trust</h5>
+  <p>
+    XmlFileErrorLog provider works in medium trust as long as it is configured to store XML error files into a folder under the root of the Web application. Medium trust, in fact, does not allow access to the file system except for the application directory and its subfolders.
+  </p>
+</div>
+
+<h2 id="choosing-your-weapon">Choosing Your Weapon</h2>
+
+<p>The providers listed above can be split into three distinct categories which should help make your decision easier.</p>
+
+<h3 id="simple-providers">Simple Providers</h3>
+
+<p>There are two simple providers to choose from:</p>
+
+<ul>
+  <li><code>MemoryErrorLog</code></li>
+  <li><code>XmlFileErrorLog</code></li>
+</ul>
+
+<h4 id="memoryerrorlog">MemoryErrorLog</h4>
+
+<p>The <code>MemoryErrorLog</code>, as its name suggests, stores errors in memory. Storing errors in memory is fast and suitable as long as they don’t need to survive application re-starts. Since application resets are often unpredictable, this log provider is usually employed for testing and troubleshooting only; in cases when everything is going wrong, it’s good to remove dependencies on external services and the <code>MemoryErrorLog</code> might help reducing moving parts. By default, the <code>MemoryErrorLog</code> stores only the last 15 errors and can be configured to retain a maximum of 500.</p>
+
+<h4 id="xmlerrorlog">XmlErrorLog</h4>
+
+<p>The <code>XmlFileErrorLog</code> stores errors into loose XML files in a configurable directory. Each error gets its own file containing all of its details. The files can easily be copied around, deleted, compressed or mailed to someone for further diagnostics. It does not require any database engine or setup, like with SQL Server and Oracle, so there is very little management overhead and you do not need to worry about additional costs when it comes to hosting plans. Although simple, it relies on the file system performance for shredding through the directory, reading files and sorting through them. A smart way of keeping logs based on <code>XmlFileErrorLog</code> running smoothly is to limit the number of files by scheduling a task to periodically archive the old logs and clean up the folder.</p>
+
+<h3 id="desktop-database-engines">Desktop Database Engines</h3>
+
+<p>In this category, there are three providers to choose from:</p>
+
+<ul>
+  <li><code>AccessErrorLog</code></li>
+  <li><code>SQLiteErrorLog</code></li>
+  <li><code>VistaDBErrorLog</code></li>
+</ul>
+
+<p>Regardless of your choice here, these providers will create the underlying database file automatically, removing the need for any up-front setup. Each one creates only a single file on disk so all errors for an application can be handled (archived, compressed, mailed, put on USB stick etc.) as a single unit.</p>
+
+<h4 id="accesserrorlog">AccessErrorLog</h4>
+
+<p>The <code>AccessErrorLog</code>, as you would expect, uses Microsoft Access as its database engine. Of the three providers in this category, this is the only one that is supported by ASP.NET 1.x, making it a great choice for legacy applications. Being part of the Microsoft Office suite of products, it will also be familiar to many Windows desktop developers. A big benefit of using <code>AccessErrorLog</code> is that you can open up the MDB in Microsoft Access for further analysis or reporting.</p>
+
+<h4 id="sqliteerrorlog">SQLiteErrorLog</h4>
+
+<p><a href="http://www.sqlite.org/">SQLite</a> is a public-domain, light-weight and embeddable relational database engine. <code>SQLiteErrorLog</code> uses <a href="http://sqlite.phxsoftware.com/"><code>System.Data.SQLite</code></a>, which is an open source ADO.NET provider for the SQLite database engine. The SQLite storage is a good choice in terms of speed and cost because it is known to be very fast and doesn’t require any additional service to be provided by an operations staff or Web application hoster. Its main limitation is that it needs <em>full trust</em> to work.</p>
+
+<h4 id="vistadberrorlog">VistaDBErrorLog</h4>
+
+<p>The <code>VistaDBErrorLog</code> uses the <a href="http://www.vistadb.net/">VistaDB.Net</a> <a href="http://vistadb.net/blog/vistadb-news/vistadb-express-release/">Express Edition</a> as its backing store. VistaDB is a database engine that has been written in 100% managed code and is free for non-commercial use. Because it is written in 100% managed code and makes no unmanaged, unsafe and unverifiable calls, it can run in medium trust environments and is therefore perfect for shared hosting scenarios.</p>
+
+<h3 id="enterprise-level-relational-databases">Enterprise-Level Relational Databases</h3>
+
+<p>At the high end, there are only two choices for your persistence, but they both are excellent options:</p>
+
+<ul>
+  <li><code>SqlErrorLog</code></li>
+  <li><code>OracleErrorLog</code></li>
+</ul>
+
+<h4 id="sqlerrorlog">SqlErrorLog</h4>
+
+<p>The <code>SqlErrorLog</code> supports Microsoft SQL Server 2000 and later versions. This error log has several advantages over the rest. It runs against every version of .NET Framework to date (1.0 through 3.5); it runs under medium trust and can scale to support a number of applications in a single database.</p>
+
+<p>While no other error log comes close to offering all of this, the one downside is that it requires some manual setup like creating a database and running a script to create tables and stored procedures.</p>
+
+<p>One final point of note: The SQL scripts that come with <code>SqlErrorLog</code> use the <code>ntext</code> data type. Whilst this data type has been <a href="http://msdn.microsoft.com/en-us/library/ms143729.aspx">deprecated with SQL Server 2005</a>,  it is still fully supported (Microsoft recommend using <strong><code>nvarchar(max)</code></strong> instead). In order to maintain backward compatibility with existing deployments, <code>SqlErrorLog</code> continues to use <strong><code>ntext</code></strong>, a design decision that will undoubtedly be reviewed as ELMAH involves and technology moves on apace.</p>
+
+<h4 id="oracleerrorlog">OracleErrorLog</h4>
+
+<p>The <code>OracleErrorLog</code> offers the same features as <code>SqlErrorLog</code> but requires full trust and supported on .NET Framework 1.1 or later. This implementation can run against Oracle 8i (from 8.1.7 onwards), Oracle 9i and Oracle 10g. There is every reason to believe that it will also run perfectly well with Oracle 11g as there are no known compatibility issues that would affect ELMAH, though it hasn’t been tested against this version of the database yet.</p>
+
+<h4 id="common-advantages">Common Advantages</h4>
+
+<p>Whenever Microsoft SQL Server or Oracle are available, they represent the best choice for every application size and complexity. Speed, performance, data resilience and many others features are intrinsic of relational database engines. Furthermore, being server-based error logging providers, they both feature the capability of storing exceptions coming from different applications. This means that several applications can point to the same database and ELMAH will be able to store their exceptions in a way that each application will only see and be notified of its own exceptions. This is accomplished by storing the unique name of each application into a field of the table where ELMAH logs the errors and subsequently filtering on the same field whenever a query is performed.</p>
+
+<p>This is especially useful in case a hosting provider or an operations environment within an enterprise want to provide a centralized error logging mechanism out of the box without wasting too many server resources and without requiring each user to have its own database for that. They would expose a public connection string pointing to a database every user can connect to just for error logging.</p>
+
+<p>Ultimately, the choice here is more than likely going to be governed by corporate standards and/or what is available to you.
+Both options here require DBA (Database Administrator) skills to get things up and running, though the <code>SqlErrorLog</code> provider will probably be much more prevalent given the advantages already listed above.</p>
+
+<h4 id="database-license-costs">Database License Costs</h4>
+
+<p>One of the biggest arguments against using enterprise-level databases is that of cost. Whilst license fees for both SQL Server and Oracle can be prohibitive for most users, it is worth pointing out that both SQL Server and Oracle come in free “Express Editions”. There are a few limitations as to their use, but they are both more than adequate for use with ELMAH. <a href="http://www.microsoft.com/express/sql/default.aspx">SQL Server Express Edition</a> and <a href="http://www.oracle.com/technology/software/products/database/xe/index.html">OracleXE</a> are both worth investigating if you want an enterprise-level database but without the usual costs associated with it.</p>
+
+      </article>
+    </div>
+
+    <div class="clear"></div>
+
+  </div>
+</section>
+
+
+  <footer role="contentinfo">
+  <div class="grid">
+    <div class="unit one-third center-on-mobiles">
+      <p>&copy;&nbsp;2004 <a href="http://www.raboof.com/">Atif Aziz</a> under the terms of the <a href="http://www.apache.org/licenses/LICENSE-2.0" title="Apache License, Version 2.0">ALv2</a>.
+         Portions &copy;&nbsp;2008 <a href="http://tom.preston-werner.com/">Tom Preston-Werner</a> under <a href="https://github.com/jekyll/jekyll/blob/master/LICENSE">MIT&nbsp;License</a>.</p>
+    </div>
+    <div class="unit two-thirds align-right center-on-mobiles">
+      <p>Published: 2016-01-22 10:44 W. Europe Standard Time</p>
+    </div>
+  </div>
+</footer>
+
+  <script>
+  var anchorForId = function (id) {
+    var anchor = document.createElement("a");
+    anchor.className = "header-link";
+    anchor.href      = "#" + id;
+    anchor.innerHTML = "<span class=\"sr-only\">Permalink</span><i class=\"fa fa-link\"></i>";
+    anchor.title = "Permalink";
+    return anchor;
+  };
+
+  var linkifyAnchors = function (level, containingElement) {
+    var headers = containingElement.getElementsByTagName("h" + level);
+    for (var h = 0; h < headers.length; h++) {
+      var header = headers[h];
+
+      if (typeof header.id !== "undefined" && header.id !== "") {
+        header.appendChild(anchorForId(header.id));
+      }
+    }
+  };
+
+  document.onreadystatechange = function () {
+    if (this.readyState === "complete") {
+      var contentBlock = document.getElementsByClassName("docs")[0]
+                      || document.getElementsByClassName("news")[0]
+                      || document.getElementsByClassName("standalone")[0];
+      if (!contentBlock) {
+        return;
+      }
+      for (var level = 1; level <= 6; level++) {
+        linkifyAnchors(level, contentBlock);
+      }
+    }
+  };
+</script>
+
+  
+
+</body>
+</html>
