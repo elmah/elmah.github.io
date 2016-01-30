@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>ELMAH&mdash;Error Log Download Applications</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="generator" content="Jekyll v3.0.0">
+  <meta name="generator" content="Jekyll v3.0.2">
   <link rel="alternate" type="application/atom+xml" title="Recent commits to master branch" href="https://github.com/elmah/www/commits/master.atom">
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic,900">
   <link rel="stylesheet" href="/css/screen.css">
@@ -79,11 +79,11 @@
           <a href="https://github.com/elmah/www/edit/master/ErrorLogDownloadApplications.md"><i class="fa fa-pencil"></i> &nbsp;Improve this page</a>
         </div>
         <h1>Error Log Download Applications</h1>
-        <p>ELMAH allows the entire error log to be downloaded as a single CSV format that be can useful for occasional and ad-hoc analysis, filtering and charting using <a href="http://www.microsoft.com/excel/">Microsoft Excel</a> and/or <a href="http://www.microsoft.com/technet/scriptcenter/tools/logparser/default.mspx">Microsoft Log Parser</a>. The download feature also supports an additional format dubbed in ELMAH as HTML-JSONP. This format enables interesting, dynamic and asynchronous reporting pages to be developed on top of the error log.</p>
+        <p>ELMAH allows the entire error log to be downloaded CSV format, which can be useful for occasional and ad-hoc analysis. For example, you can filter and chart using <a href="http://www.microsoft.com/excel/">Microsoft Excel</a> and/or <a href="http://www.microsoft.com/technet/scriptcenter/tools/logparser/default.mspx">Microsoft Log Parser</a>. The download feature also supports an additional format dubbed in ELMAH as HTML-JSONP. This format enables interesting, dynamic and asynchronous reporting pages to be developed on top of the error log.</p>
 
-<p>In the HTML-JSONP format, ELMAH produces a single HTML document with <a href="http://en.wikipedia.org/wiki/JSONP">JSONP</a> callbacks wrapped in <code>script</code> tags. Each callback delivers a single page of (hundred or so) errors. For best results, the HTML document is designed to be hosted in an <code>iframe</code> in a parent document with JSONP callbacks being delivered to it. This has two benefits. First, the <em>iframed</em> HTML document loads asynchronously while the parent document can remain interactive. Second, ELMAH streams down the document in chunks so that the browser can parse and evaluate each <code>script</code> tag as it arrives and make the JSONP callbacks on the parent. This enables the parent or host document to process a page of errors as soon as it is delivered, meaning the user does not have to wait for the entire log to download before beginning to receive some feedback or reporting. This can be especially important when the log grows large or if you happen to be browsing on a mobile device such as a phone or a tablet and the network latency is high.</p>
+<p>In the HTML-JSONP format, ELMAH produces a single HTML document with <a href="http://en.wikipedia.org/wiki/JSONP">JSONP</a> callbacks wrapped in <code>script</code> tags. Each callback delivers a single page of hundred or so errors. For best results, the HTML document is designed to be hosted in an <code>iframe</code> in a parent document with JSONP callbacks being delivered to it. This has two benefits. First, the <em>iframed</em> HTML document loads asynchronously while the parent document can remain interactive. Second, ELMAH streams down the document in chunks so that the browser can parse and evaluate each <code>script</code> tag as it arrives and make the JSONP callbacks on the parent. This enables the parent or host document to process a page of errors as soon as it is delivered, meaning the user does not have to wait for the entire log to download before beginning to receive some feedback or reporting. This can be especially important when the log grows large or if you happen to be browsing on a mobile device such as a phone or a tablet and the network latency is high.</p>
 
-<p>The HTML-JSONP format is requested by appending a query to the log download URL with the following named fields/parameters:</p>
+<p>The HTML-JSONP format is requested by appending a query to the log download URL with the following named fields or parameters:</p>
 
 <table>
   <thead>
@@ -117,7 +117,7 @@
 <figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;iframe</span> <span class="na">width=</span><span class="s">&quot;0&quot;</span> <span class="na">height=</span><span class="s">&quot;0&quot;</span>
         <span class="na">src=</span><span class="s">&quot;http://www.example.com/elmah.axd/download?format=html-json&amp;callback=parent.onerrors&quot;</span><span class="nt">&gt;&lt;/iframe&gt;</span></code></pre></figure>
 
-<p>The callback function receives a single object value each time with two properties, namely <code>total</code> and <code>errors</code>. <code>total</code> is always a number representing the total errors recorded in the log whereas <code>errors</code> is an array whose each element is an object representing a single error entry. Below is an example of one such entry in JSON:</p>
+<p>The callback function receives a single object value each time with two properties, namely <code>total</code> and <code>errors</code>. <code>total</code> is always a number representing the total errors recorded in the log whereas <code>errors</code> is an array of objects representing the actual error entries. Below is an example of one such entry in JSON:</p>
 
 <figure class="highlight"><pre><code class="language-json" data-lang="json"><span class="p">{</span>
   <span class="nt">&quot;application&quot;</span><span class="p">:</span><span class="s2">&quot;/LM/W3SVC/3/ROOT&quot;</span><span class="p">,</span>
@@ -142,11 +142,11 @@
   <span class="p">]</span>
 <span class="p">}</span></code></pre></figure>
 
-<p>Note the the <code>hrefs</code> array can be used to obtain further details about the error in various formats (HTML, JSON and XML). To tell the callback function that the entire log has been delivered, ELMAH issues a last callback where the errors array is empty.</p>
+<p>Note the the <code>hrefs</code> array can be used to obtain further details about the error in various formats (HTML, JSON and XML). To tell the callback function that the entire log has been delivered, ELMAH issues a last callback where the <code>errors</code> array is empty.</p>
 
 <p>The callback function should be designed to handle duplicate entires and a changing total number of errors. Both can happen, for example, when new errors get logged while the log is being downloaded. This is the reason ELMAH delivers the total count of error with each callback and page of errors.</p>
 
-<p><a href="https://github.com/elmah/elvue">Elvue</a> is an open source and a working example of a single HTML page that produces a tabular and graphical report of the types of errors logged in an ELMAH error log (see screenshot below). You are encouraged to study the source and also contribute ideas.</p>
+<p><a href="https://github.com/elmah/elvue">Elvue</a> is an open source and a working example of a single HTML page that produces a tabular and graphical report of the types of errors logged in an ELMAH error log (see the screenshot below). You are encouraged to study the source and also contribute ideas.</p>
 
 <p><img src="/img/elvue.png" alt="Elvue iPad Screenshot" /></p>
 
@@ -167,7 +167,7 @@
          Portions &copy;&nbsp;2008 <a href="http://tom.preston-werner.com/">Tom Preston-Werner</a> under <a href="https://github.com/jekyll/jekyll/blob/master/LICENSE">MIT&nbsp;License</a>.</p>
     </div>
     <div class="unit two-thirds align-right center-on-mobiles">
-      <p>Published: 2016-01-27 08:42 W. Europe Standard Time</p>
+      <p>Published: 2016-01-30 14:41 CET</p>
     </div>
   </div>
 </footer>
