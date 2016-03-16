@@ -79,7 +79,24 @@
           <a href="https://github.com/elmah/www/edit/master/Compiling.md"><i class="fa fa-pencil"></i> &nbsp;Improve this page</a>
         </div>
         <h1>Compiling</h1>
-        <p>You can compile ELMAH from the sources in one of three ways:</p>
+        <p>You can compile ELMAH from the sources in one of two ways:</p>
+
+<ul>
+  <li>Interactively, using solution and project files supplied for Microsoft Visual Studio.</li>
+  <li>Using a batch script that requires MS Build</li>
+</ul>
+
+<h3 id="compiling-interactively-using-microsoft-visual-studio">Compiling Interactively Using Microsoft Visual Studio</h3>
+
+<p>Use the Microsoft Visual Studio solution named Elmah.sln found in the root directory. There are project files supplied for Microsoft Visual Studio 2013 under respective sub-directories.</p>
+
+<h3 id="batch-compiling-using-msbuild">Batch Compiling Using MSBuild</h3>
+
+<p>The <code>build.cmd</code> script launches MSBuild to compile the solution from the command-line. The batch script detects the versions installed on your system and builds only using those versions that are found to be installed. The detection is very simple. It expects to find the various MSBuild versions to be installed in their known default locations. If you supplied a custom path during installation, you may have to adjust the script accordingly.</p>
+
+<h2 id="elmah-12-sp2-and-earlier">ELMAH 1.2 SP2 and Earlier</h2>
+
+<p>You can compile ELMAH from the sources in one of three ways:</p>
 
 <ul>
   <li>Interactively, using solution and project files supplied for the various Microsoft Visual Studio versions.</li>
@@ -87,17 +104,17 @@
   <li>Using a batch script that uses only the Visual C# compiler for compilation (i.e. MS Build and Microsoft Visual Studio are not required).</li>
 </ul>
 
-<h2 id="compiling-interactively-using-microsoft-visual-studio">Compiling Interactively Using Microsoft Visual Studio</h2>
+<h3 id="compiling-interactively-using-microsoft-visual-studio-1">Compiling Interactively Using Microsoft Visual Studio</h3>
 
 <p>Use Microsoft Visual Studio solutions found under the <code>src/Solutions</code> directory. There are solution and project files supplied for Microsoft Visual Studio .NET 2002, Microsoft Visual Studio .NET 2003, and Microsoft Visual Studio 2010 under respective sub-directories.</p>
 
-<h2 id="batch-compiling-using-microsoft-visual-studio">Batch Compiling Using Microsoft Visual Studio</h2>
+<h3 id="batch-compiling-using-microsoft-visual-studio">Batch Compiling Using Microsoft Visual Studio</h3>
 
 <p>The <code>src/Solutions/build.cmd</code> script launches Microsoft Visual Studio to compile each solution from the command-line. The batch script detects the versions installed on your system and builds only using those versions that are found to be installed. The detection is very simple. It expects to find the various Microsoft Visual Studio versions to be installed in their known default locations. If you supplied a custom path during installation, you may have to adjust the script accordingly.</p>
 
 <p>For .NET Framework 2.0, however, only <code>msbuild.exe</code> and the runtime is needed. Microsoft Visual Studio 2010 is not required for compiling.</p>
 
-<h2 id="batch-compiling-using-c-compiler">Batch Compiling Using C# Compiler</h2>
+<h3 id="batch-compiling-using-c-compiler">Batch Compiling Using C# Compiler</h3>
 
 <p>The <code>build.cmd</code> in the root of the distribution uses the Visual C# compiler to compile the sources. The script takes a single argument of that specifies the .NET Framework runtime to target. You can specify <code>all</code>, <code>1.0</code>, <code>1.1</code> or <code>2.0</code>. Running the script without any arguments displays usage help, as shown in the following example:</p>
 
@@ -132,6 +149,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.</code></pre></figure>
 
+
       </article>
     </div>
 
@@ -148,7 +166,7 @@ limitations under the License.</code></pre></figure>
          Portions &copy;&nbsp;2008 <a href="http://tom.preston-werner.com/">Tom Preston-Werner</a> under <a href="https://github.com/jekyll/jekyll/blob/master/LICENSE">MIT&nbsp;License</a>.</p>
     </div>
     <div class="unit two-thirds align-right center-on-mobiles">
-      <p>Published: 2016-03-15 18:56 CET</p>
+      <p>Published: 2016-03-16 21:44 CET</p>
     </div>
   </div>
 </footer>
