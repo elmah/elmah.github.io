@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>ELMAH&mdash;Error Filtering</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="generator" content="Jekyll v3.7.3">
+  <meta name="generator" content="Jekyll v3.6.2">
   <link rel="alternate" type="application/atom+xml" title="Recent commits to master branch" href="https://github.com/elmah/www/commits/master.atom">
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic,900">
   <link rel="stylesheet" href="/css/screen.css">
@@ -121,7 +121,7 @@
         <span class="n">e</span><span class="p">.</span><span class="n">Dismiss</span><span class="p">();</span>
 <span class="p">}</span></code></pre></figure>
 
-<p>It’s really simple as that. When the error logging module receives an exception, it raises the <code>Filtering</code> even to see if any listeners wish to dismiss the exception. If an event handler calls the <code>Dismiss</code> method of the <code>ExceptionFilterEventArgs</code> object then the exception is not logged. Note that dismissing an exception does not clear the error so it still continues to surface as an unhandled exception. Dismissing here means that the module will not log it.</p>
+<p>It’s really simple as that. When the error logging module receives an exception, it raises the <code>Filtering</code> event to see if any listeners wish to dismiss the exception. If an event handler calls the <code>Dismiss</code> method of the <code>ExceptionFilterEventArgs</code> object then the exception is not logged. Note that dismissing an exception does not clear the error so it still continues to surface as an unhandled exception. Dismissing here means that the module will not log it.</p>
 
 <p>If you also have the <code>ErrorMailModule</code> enabled, the filtering procedure is similar. You setup another event handler based on the name of the module and the event:</p>
 
@@ -379,7 +379,7 @@
          Portions &copy;&nbsp;2008 <a href="http://tom.preston-werner.com/">Tom Preston-Werner</a> under <a href="https://github.com/jekyll/jekyll/blob/master/LICENSE">MIT&nbsp;License</a>.</p>
     </div>
     <div class="unit two-thirds align-right center-on-mobiles">
-      <p>Published: 2018-03-14 22:37 CET</p>
+      <p>Published: 2019-05-01 03:29 CDT</p>
     </div>
   </div>
 </footer>
